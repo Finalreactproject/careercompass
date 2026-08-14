@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
-
-function Sidebar() {
-  const name = localStorage.getItem("userName") || "Student";
+function Sidebar({ currentPage, setCurrentPage, profile }) {
+  const name =
+    profile?.fullName || localStorage.getItem("userName") || "Student";
 
   return (
     <aside className="sidebar">
@@ -9,18 +8,24 @@ function Sidebar() {
       <small>FIND · GROW · GO</small>
 
       <h5>MAIN</h5>
-      <Link to="/dashboard">🏠 Dashboard</Link>
-      <Link to="/jobs">🔍 Discover Jobs</Link>
+      <button onClick={() => setCurrentPage("discover")}>🏠 Dashboard</button>
+      <button onClick={() => setCurrentPage("discover")}>
+        🔍 Discover Jobs
+      </button>
 
       <h5>APPLICATIONS</h5>
-      <Link to="/applications">Applications</Link>
-      <Link to="/interviews">🎤 Interviews</Link>
+      <button onClick={() => setCurrentPage("applications")}>
+        Applications
+      </button>
+      <button onClick={() => setCurrentPage("interviews")}>
+        🎤 Interviews
+      </button>
 
       <h5>DOCUMENTS</h5>
-      <Link to="/cv-center">📄 CV Center</Link>
+      <button onClick={() => setCurrentPage("cv")}>📄 CV Center</button>
 
       <h5>ACCOUNT</h5>
-      <Link to="/profile">👤 Profile</Link>
+      <button onClick={() => setCurrentPage("profile")}>👤 Profile</button>
 
       <div className="sidebar-user">
         <strong>{name}</strong>
