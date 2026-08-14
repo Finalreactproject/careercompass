@@ -9,9 +9,7 @@ function Sidebar({ currentPage, setCurrentPage, profile }) {
 
       <h5>MAIN</h5>
       <button onClick={() => setCurrentPage("discover")}>🏠 Dashboard</button>
-      <button onClick={() => setCurrentPage("discover")}>
-        🔍 Discover Jobs
-      </button>
+      <button onClick={() => setCurrentPage("jobs")}>🔍 Discover Jobs</button>
 
       <h5>APPLICATIONS</h5>
       <button onClick={() => setCurrentPage("applications")}>
