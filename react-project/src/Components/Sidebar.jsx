@@ -9,18 +9,18 @@ function Sidebar() {
       <small>FIND · GROW · GO</small>
 
       <h5>MAIN</h5>
-      <a href="/dashboard">🏠 Dashboard</a>
-      <a href="/jobs">🔍 Discover Jobs</a>
+      <Link to="/dashboard">🏠 Dashboard</Link>
+      <Link to="/jobs">🔍 Discover Jobs</Link>
 
       <h5>APPLICATIONS</h5>
       <Link to="/applications">Applications</Link>
-      <a href="/interviews">🎙 Interviews</a>
+      <Link to="/interviews">🎤 Interviews</Link>
 
       <h5>DOCUMENTS</h5>
-      <a href="/cv">📁 CV Center</a>
+      <Link to="/cv-center">📄 CV Center</Link>
 
       <h5>ACCOUNT</h5>
-      <a href="/profile">👤 Profile</a>
+      <Link to="/profile">👤 Profile</Link>
 
       <div className="sidebar-user">
         <strong>{name}</strong>
