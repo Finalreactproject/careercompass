@@ -36,7 +36,7 @@ function FeatureGrid() {
     <section id="features" className="feature-grid-section">
       <div className="section-heading">
         <h2>Everything you need to get hired.</h2>
-        <p>Built for job seekers — not recruiters, not job boards.</p>
+        <p>Built for job seekers and recruiters.</p>
       </div>
 
       <div className="feature-grid">

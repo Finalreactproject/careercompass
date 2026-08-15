@@ -169,23 +169,31 @@ function RecruiterDashboard() {
   }
 
   function handlePostJob(jobData) {
+    const recruiterData = JSON.parse(localStorage.getItem('recruiter_profile') || '{}')
+    const company = recruiterData.companyName || 'Safaricom PLC'
     const newJobObj = {
       id: 'rj-' + Date.now(),
+      company,
       title: jobData.title,
       type: jobData.type,
       location: jobData.location,
       salary: jobData.salary,
+      skills: jobData.skills || ['React', 'JavaScript'],
+      experience: jobData.experience || 'Entry level',
+      description: jobData.description || 'Open position for student & graduate candidates.',
       status: 'Active',
     }
-    setJobs([newJobObj, ...jobs])
+    const updatedJobs = [newJobObj, ...jobs]
+    setJobs(updatedJobs)
+    localStorage.setItem('recruiter_jobs', JSON.stringify(updatedJobs))
     setShowPostModal(false)
 
-    // Also notify job seekers that a new verified job was posted
+    // Notify job seekers
     const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
     const newNotification = {
       id: 'notif-' + Date.now(),
       title: 'New Verified Job Posted 🚀',
-      message: `${jobData.title} is now open for applications in ${jobData.location}.`,
+      message: `${jobData.title} at ${company} is now open for applications in ${jobData.location}.`,
       date: 'Just now',
       unread: true,
     }

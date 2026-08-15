@@ -1,86 +1,73 @@
-import { useState } from 'react'
-
-const STAGES = [
+const AUDIENCES = [
   {
-    id: 'students',
-    icon: '🎓',
     title: 'Students & Interns',
-    body: 'Find attachments, industrial training, and internships filtered by location and skill level.',
-    samples: [
-      { title: 'Frontend Developer Intern', company: 'Safaricom PLC', location: 'Nairobi (Hybrid)', pay: 'KES 35,000/mo' },
-      { title: 'UX Research Attachment', company: 'Cellulant', location: 'Remote', pay: 'KES 30,000/mo' },
-    ],
+    tag: 'Entry Level',
+    desc: 'Find attachments and entry-level roles tailored for first-time applicants.',
+    perks: ['Beginner-friendly CV builder', 'Attachment & internship filters', 'Practice interview questions'],
   },
   {
-    id: 'graduates',
-    icon: '🚀',
-    title: 'New Graduates',
-    body: 'Your first full-time role. We know "no experience yet" is a starting point, not a flaw.',
-    samples: [
-      { title: 'Graduate Software Trainee', company: 'Equity Group', location: 'Nairobi HQ', pay: 'KES 85,000/mo' },
-      { title: 'Associate Data Analyst', company: 'Andela Kenya', location: 'Global Remote', pay: 'KES 110,000/mo' },
-    ],
+    title: 'Graduates & Job Seekers',
+    tag: 'Early Career',
+    desc: 'Organize your job search and stand out to hiring managers.',
+    perks: ['Application status tracker', 'Instant CV score against job posts', 'Interview prep & feedback'],
   },
   {
-    id: 'pros',
-    icon: '💼',
-    title: 'Early-Career Pros',
-    body: '1–3 years in? Track every application, prep for interviews, and keep your momentum.',
-    samples: [
-      { title: 'Fullstack Engineer (React/Node)', company: 'M-KOPA Africa', location: 'Nairobi', pay: 'KES 160,000/mo' },
-      { title: 'Growth Marketing Specialist', company: 'Jumia Kenya', location: 'Nairobi', pay: 'KES 130,000/mo' },
-    ],
+    title: 'Recruiters & Companies',
+    tag: 'Hiring Teams',
+    desc: 'Discover and shortlist verified student talent with required skills.',
+    perks: ['Post jobs & internship openings', 'Skill-matched candidate search', 'Direct pipeline management'],
   },
 ]
 
-const EMPLOYERS = [
+const PARTNERS = [
   'Safaricom', 'Andela', 'M-KOPA', 'Equity Bank', 'Cellulant',
   "Africa's Talking", 'Flutterwave', 'Jumia', 'KCB Group', 'Twiga Foods',
 ]
 
 function AudienceStrip() {
-  const [selected, setSelected] = useState('graduates')
-  const active = STAGES.find((s) => s.id === selected)
-
   return (
     <section id="audience" className="audience-strip">
       <div className="section-heading">
-        <h2>Who is CareerCompass for?</h2>
-        <p>Pick your career stage and see what's waiting for you.</p>
+        <h2>Who CareerCompass is for</h2>
+        <p>Whether you're starting your career or hiring fresh talent, we have you covered.</p>
       </div>
 
-      <div className="stage-tabs">
-        {STAGES.map((s) => (
-          <button
-            key={s.id}
-            className={selected === s.id ? 'stage-tab active' : 'stage-tab'}
-            onClick={() => setSelected(s.id)}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, marginTop: 28 }}>
+        {AUDIENCES.map((item) => (
+          <div
+            key={item.title}
+            style={{
+              background: '#fff',
+              border: '1px solid #e8eaf2',
+              borderRadius: 12,
+              padding: 22,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+            }}
           >
-            {s.icon} {s.title}
-          </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <h3 style={{ margin: 0, fontSize: 17, color: '#1a1d2e' }}>{item.title}</h3>
+              <span style={{ fontSize: 11, fontWeight: 600, background: '#f0ecf9', color: '#6244a0', padding: '2px 8px', borderRadius: 12 }}>
+                {item.tag}
+              </span>
+            </div>
+            <p style={{ fontSize: 13.5, color: '#5b6275', lineHeight: 1.5, margin: '0 0 14px' }}>
+              {item.desc}
+            </p>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#444', lineHeight: 1.7 }}>
+              {item.perks.map((perk, i) => (
+                <li key={i}>{perk}</li>
+              ))}
+            </ul>
+          </div>
         ))}
       </div>
 
-      {active && (
-        <div className="stage-content">
-          <p>{active.body}</p>
-          <div className="sample-jobs">
-            {active.samples.map((job) => (
-              <div key={job.title} className="sample-job">
-                <strong>{job.title}</strong>
-                <span>{job.company}</span>
-                <span>{job.location}</span>
-                <span className="job-pay">{job.pay}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="employer-strip">
-        <p>Employers on the platform</p>
+      <div className="employer-strip" style={{ marginTop: 40 }}>
+        <p style={{ textAlign: 'center', fontSize: 13, color: '#777', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 14 }}>
+          Trusted by talent aiming for top companies
+        </p>
         <div className="employer-scroll">
-          {[...EMPLOYERS, ...EMPLOYERS].map((name, i) => (
+          {[...PARTNERS, ...PARTNERS].map((name, i) => (
             <span key={i}>{name}</span>
           ))}
         </div>

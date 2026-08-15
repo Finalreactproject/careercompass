@@ -1,34 +1,46 @@
-// Main application sidebar navigation
 function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
   const isRecruiter = userRole === 'recruiter'
+  const recruiterData = JSON.parse(localStorage.getItem('recruiter_profile') || '{}')
   const name = isRecruiter
-    ? 'Recruiter HQ'
-    : profile?.fullName || localStorage.getItem('userName') || 'Gladys Wanjiku'
-  const subtitle = isRecruiter ? 'Verified Employer' : profile?.experienceLevel || 'Student'
+    ? recruiterData.companyName || 'Recruiter HQ'
+    : profile?.fullName || 'Gladys Wanjiku'
+  const subtitle = isRecruiter
+    ? (recruiterData.recruiterName ? `${recruiterData.recruiterName} · Recruiter` : 'Verified Employer')
+    : profile?.experienceLevel || 'Student'
+
+  const activeStyle = { background: isRecruiter ? '#1976d2' : '#6244a0', color: '#fff' }
 
   return (
     <aside className="sidebar">
       <h2>CareerCompass</h2>
       <small>FIND · GROW · GO</small>
 
-      <h5>{isRecruiter ? 'RECRUITER HQ' : 'MAIN'}</h5>
+      <h5>{isRecruiter ? 'HIRING HQ' : 'MAIN'}</h5>
       {isRecruiter ? (
-        <button
-          style={currentPage === 'recruiter' ? { background: '#1976d2', color: '#fff' } : {}}
-          onClick={() => setCurrentPage('recruiter')}
-        >
-          💼 Recruiter Dashboard
-        </button>
+        <>
+          <button
+            style={currentPage === 'recruiter' ? activeStyle : {}}
+            onClick={() => setCurrentPage('recruiter')}
+          >
+            💼 Candidate Pipeline
+          </button>
+          <button
+            style={currentPage === 'recruiter-interviews' ? activeStyle : {}}
+            onClick={() => setCurrentPage('recruiter-interviews')}
+          >
+            📅 Interviews & Meetings
+          </button>
+        </>
       ) : (
         <>
           <button
-            style={currentPage === 'discover' ? { background: '#6244a0', color: '#fff' } : {}}
+            style={currentPage === 'discover' ? activeStyle : {}}
             onClick={() => setCurrentPage('discover')}
           >
             🏠 Dashboard
           </button>
           <button
-            style={currentPage === 'jobs' ? { background: '#6244a0', color: '#fff' } : {}}
+            style={currentPage === 'jobs' ? activeStyle : {}}
             onClick={() => setCurrentPage('jobs')}
           >
             🔍 Discover Jobs
@@ -36,25 +48,25 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
         </>
       )}
 
-      <h5>JOB PIPELINE</h5>
-      <button
-        style={currentPage === 'applications' ? { background: isRecruiter ? '#1976d2' : '#6244a0', color: '#fff' } : {}}
-        onClick={() => setCurrentPage('applications')}
-      >
-        📋 Applications
-      </button>
-      <button
-        style={currentPage === 'interviews' ? { background: isRecruiter ? '#1976d2' : '#6244a0', color: '#fff' } : {}}
-        onClick={() => setCurrentPage('interviews')}
-      >
-        🎤 Interviews & Prep
-      </button>
-
       {!isRecruiter && (
         <>
+          <h5>JOB PIPELINE</h5>
+          <button
+            style={currentPage === 'applications' ? activeStyle : {}}
+            onClick={() => setCurrentPage('applications')}
+          >
+            📋 Applications
+          </button>
+          <button
+            style={currentPage === 'interviews' ? activeStyle : {}}
+            onClick={() => setCurrentPage('interviews')}
+          >
+            🎤 Interviews & Prep
+          </button>
+
           <h5>DOCUMENTS</h5>
           <button
-            style={currentPage === 'cv' ? { background: '#6244a0', color: '#fff' } : {}}
+            style={currentPage === 'cv' ? activeStyle : {}}
             onClick={() => setCurrentPage('cv')}
           >
             📄 CV Center
@@ -63,9 +75,16 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
       )}
 
       <h5>ACCOUNT</h5>
-      {!isRecruiter && (
+      {isRecruiter ? (
         <button
-          style={currentPage === 'profile' ? { background: '#6244a0', color: '#fff' } : {}}
+          style={currentPage === 'recruiter-profile' ? activeStyle : {}}
+          onClick={() => setCurrentPage('recruiter-profile')}
+        >
+          🏢 Company Profile
+        </button>
+      ) : (
+        <button
+          style={currentPage === 'profile' ? activeStyle : {}}
           onClick={() => setCurrentPage('profile')}
         >
           👤 Profile

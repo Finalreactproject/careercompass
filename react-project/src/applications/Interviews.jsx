@@ -63,9 +63,9 @@ function Interviews({ onPractice, onViewDetails }) {
   const [interviews, setInterviews] = useState(getStoredInterviews)
   const [tab, setTab] = useState('Upcoming')
   const [roleFilter, setRoleFilter] = useState('All')
+  const [reminderModalIv, setReminderModalIv] = useState(null)
 
   useEffect(() => {
-    // Also check if any applications in localStorage are in 'Interview' stage and not yet in interviews list
     const apps = JSON.parse(localStorage.getItem('applications')) || []
     const interviewApps = apps.filter((a) => a.status === 'Interview')
     const current = getStoredInterviews()
@@ -79,7 +79,7 @@ function Interviews({ onPractice, onViewDetails }) {
           company: app.company,
           role: app.title,
           round: 'Technical Interview',
-          date: 'Upcoming this week',
+          date: 'Aug 24, 2026',
           time: '10:00 AM',
           status: 'Upcoming',
           location: app.location || 'Nairobi',
@@ -94,6 +94,15 @@ function Interviews({ onPractice, onViewDetails }) {
       setInterviews([...current])
     }
   }, [])
+
+  function handleSetReminder(minutes) {
+    const updated = interviews.map((iv) =>
+      iv.id === reminderModalIv.id ? { ...iv, reminderMinutes: minutes } : iv
+    )
+    localStorage.setItem('interviews', JSON.stringify(updated))
+    setInterviews(updated)
+    setReminderModalIv(null)
+  }
 
   const uniqueRoles = ['All', ...new Set(interviews.map((iv) => iv.role))]
 
@@ -177,55 +186,110 @@ function Interviews({ onPractice, onViewDetails }) {
                   </span>
                 </div>
 
-                <div style={{ background: '#f8f8fc', border: '1px solid #eee', borderRadius: 8, padding: '10px 12px', fontSize: 13, marginBottom: 16 }}>
+                <div style={{ background: '#f8f8fc', border: '1px solid #eee', borderRadius: 8, padding: '10px 12px', fontSize: 13, marginBottom: 14 }}>
                   <div style={{ marginBottom: 4 }}>🎯 <strong>Round:</strong> {iv.round}</div>
                   <div>📅 <strong>Date:</strong> {iv.date} at {iv.time}</div>
                 </div>
+
+                {iv.reminderMinutes && (
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, background: '#fff8e1', color: '#f57f17', border: '1px solid #ffe082', padding: '3px 10px', borderRadius: 14, marginBottom: 14 }}>
+                    🔔 Reminder: {iv.reminderMinutes} mins before
+                  </div>
+                )}
               </div>
 
               {/* Action buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px solid #f0f0f0', paddingTop: 14 }}>
-                <button
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                  onClick={() => onPractice(iv)}
-                >
-                  🎯 Practice Role Interview
-                </button>
-
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button
-                    className="btn-outline"
-                    style={{ flex: 1, fontSize: 13, padding: '8px' }}
-                    onClick={() => onViewDetails(iv)}
-                  >
-                    Prep & Details
-                  </button>
-
-                  {iv.meetingLink && (
-                    <a
-                      href={iv.meetingLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        flex: 1,
-                        background: '#1976d2',
-                        color: '#fff',
-                        borderRadius: 8,
-                        fontSize: 13,
-                        fontWeight: 500,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textDecoration: 'none',
-                      }}
+                {iv.status === 'Upcoming' ? (
+                  <>
+                    <button
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                      onClick={() => onPractice(iv)}
                     >
-                      📹 Launch Call
-                    </a>
-                  )}
-                </div>
+                      🎯 Practice Role Interview
+                    </button>
+
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button
+                        className="btn-outline"
+                        style={{ flex: 1, fontSize: 13, padding: '8px' }}
+                        onClick={() => onViewDetails(iv)}
+                      >
+                        Prep & Details
+                      </button>
+
+                      <button
+                        className="btn-outline"
+                        style={{ flex: 1, fontSize: 13, padding: '8px' }}
+                        onClick={() => setReminderModalIv(iv)}
+                      >
+                        🔔 Reminder
+                      </button>
+
+                      {iv.meetingLink && (
+                        <a
+                          href={iv.meetingLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            flex: 1,
+                            background: '#1976d2',
+                            color: '#fff',
+                            borderRadius: 8,
+                            fontSize: 13,
+                            fontWeight: 500,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textDecoration: 'none',
+                          }}
+                        >
+                          📹 Join Call
+                        </a>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ fontSize: 13, color: '#2e7d32', background: '#e8f5e9', padding: '10px 12px', borderRadius: 8, textAlign: 'center' }}>
+                    ✓ Interview Completed
+                  </div>
+                )}
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Reminder Modal */}
+      {reminderModalIv && (
+        <div className="edit-overlay" onClick={() => setReminderModalIv(null)}>
+          <div className="edit-modal" style={{ maxWidth: 380 }} onClick={(e) => e.stopPropagation()}>
+            <div className="edit-header">
+              <div>
+                <h2>Set Meeting Reminder</h2>
+                <p>Choose when to receive an alert before {reminderModalIv.company}'s interview.</p>
+              </div>
+              <button className="close-button" onClick={() => setReminderModalIv(null)}>×</button>
+            </div>
+
+            <div style={{ padding: 20 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+                {[5, 10, 15, 30].map((mins) => (
+                  <button
+                    key={mins}
+                    className={reminderModalIv.reminderMinutes === mins ? '' : 'btn-outline'}
+                    style={{ padding: '12px 8px', fontSize: 13 }}
+                    onClick={() => handleSetReminder(mins)}
+                  >
+                    🔔 {mins} Mins Before
+                  </button>
+                ))}
+              </div>
+              <button className="cancel-button" style={{ width: '100%' }} onClick={() => setReminderModalIv(null)}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>
