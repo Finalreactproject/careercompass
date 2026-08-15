@@ -52,9 +52,11 @@ function JobDiscovery() {
   }
 
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const searchText = [job.title, job.description, ...(job.tags || [])]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch = searchText.includes(searchTerm.trim().toLowerCase());
 
     const matchesLocation = locationFilter
       ? job.candidate_required_location
@@ -62,9 +64,9 @@ function JobDiscovery() {
           .includes(locationFilter.toLowerCase())
       : true;
 
-      const matchesJobType = jobTypeFilter
-        ? job.job_type?.toLowerCase().includes(jobTypeFilter.toLowerCase())
-        : true;
+    const matchesJobType = jobTypeFilter
+      ? job.job_type?.toLowerCase().includes(jobTypeFilter.toLowerCase())
+      : true;
 
     return matchesSearch && matchesLocation && matchesJobType;
   });
