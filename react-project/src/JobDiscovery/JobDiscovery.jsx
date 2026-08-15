@@ -10,20 +10,41 @@ function JobDiscovery() {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [jobTypeFilter, setJobTypeFilter] = useState("");
-  const [savedJobs, setSavedJobs] = useState([]);
+  // Load saved jobs from localStorage so they survive navigation
+  const [savedJobs, setSavedJobs] = useState(() =>
+    JSON.parse(localStorage.getItem('applications') || '[]')
+      .filter((a) => a.status === 'Saved')
+      .map((a) => ({ id: a.id }))
+  )
 
   function toggleSaveJob(job) {
-    setSavedJobs((currentSavedJobs) => {
-      const alreadySaved = currentSavedJobs.some(
-        (savedJob) => savedJob.id === job.id,
-      );
+    const stored = JSON.parse(localStorage.getItem('applications') || '[]')
+    const alreadySaved = stored.some((a) => a.id === job.id)
 
-      if (alreadySaved) {
-        return currentSavedJobs.filter((savedJob) => savedJob.id !== job.id);
+    let updated
+    if (alreadySaved) {
+      // Unsave — remove from applications list
+      updated = stored.filter((a) => a.id !== job.id)
+    } else {
+      // Save — add as a "Saved" application in the standard shape
+      const newEntry = {
+        id: job.id,
+        title: job.title,
+        company: job.company_name,
+        location: job.candidate_required_location || '',
+        status: 'Saved',
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        source: 'external_api',
+        notes: '',
       }
+      updated = [...stored, newEntry]
+    }
 
-      return [...currentSavedJobs, job];
-    });
+    localStorage.setItem('applications', JSON.stringify(updated))
+    window.dispatchEvent(new Event('applicationsUpdated'))
+
+    // Keep local isSaved state in sync
+    setSavedJobs(updated.filter((a) => a.status === 'Saved').map((a) => ({ id: a.id })))
   }
 
   const [loading, setLoading] = useState(true);
