@@ -6,6 +6,7 @@ import EditProfile from "./profile/EditProfile";
 import OverviewCards from "./Components/OverviewCards";
 import RecentApplications from "./Components/RecentApplication";
 import CVCenter from "./CV page/CvCenter";
+import JobDiscovery from "./JobDiscovery/JobDiscovery";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,13 +70,13 @@ function App() {
           </main>
         )}
 
+        {currentPage === "jobs" && <JobDiscovery />}
+
         {currentPage === "profile" && (
           <Profile profile={profile} onEdit={() => setShowEditProfile(true)} />
         )}
 
-        {currentPage === "cv" && (
-          <CVCenter />
-        )}
+        {currentPage === "cv" && <CVCenter />}
       </div>
 
       {showEditProfile && (
