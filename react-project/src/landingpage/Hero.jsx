@@ -4,7 +4,7 @@ function Hero({ onLogin }) {
       <div className="hero-inner">
         <div className="hero-text">
           <span className="hero-badge">🇰🇪 Built for Kenyan Job Seekers</span>
-          <h1>Find verified jobs.<br />Track every step.<br />Land the offer.</h1>
+          <h1>Find verified jobs.<br />Track every step.<br /><span className="highlight-text">Land the offer.</span></h1>
           <p>
             CareerCompass matches you to scam-free, verified roles across Kenya —
             then helps you apply, track your pipeline, and prep for interviews, all in one place.

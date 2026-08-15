@@ -690,9 +690,9 @@ button:hover {
 .public-nav {
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #eee;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e8eaf2;
   z-index: 100;
 }
 
@@ -712,21 +712,33 @@ button:hover {
 }
 
 .brand-name {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
   color: #6244a0;
+  letter-spacing: -0.3px;
+}
+
+.nav-brand small {
+  color: gray;
+  font-size: 11px;
+  letter-spacing: 0.5px;
 }
 
 .nav-links {
   display: flex;
-  gap: 24px;
+  gap: 26px;
 }
 
 .nav-links a {
   text-decoration: none;
-  color: dimgray;
+  color: #4a5568;
   font-size: 14px;
   font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #6244a0;
 }
 
 .nav-actions {
@@ -735,7 +747,7 @@ button:hover {
 }
 
 .hero {
-  padding: 60px 24px 40px;
+  padding: 64px 24px 44px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -743,34 +755,44 @@ button:hover {
 .hero-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 48px;
   align-items: center;
-  margin-bottom: 48px;
+  margin-bottom: 50px;
 }
 
 .hero-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: lavender;
   color: darkslateblue;
+  border: 1px solid #e0d7f5;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .hero-text h1 {
-  font-size: 42px;
+  font-size: 44px;
   line-height: 1.15;
-  margin: 0 0 16px;
-  color: #252b45;
+  font-weight: 800;
+  margin: 0 0 18px;
+  color: #1a1d2e;
+  letter-spacing: -0.5px;
+}
+
+.highlight-text {
+  color: #6244a0;
 }
 
 .hero-text p {
   font-size: 16px;
   line-height: 1.6;
   color: dimgray;
-  margin: 0 0 24px;
+  margin: 0 0 26px;
+  max-width: 520px;
 }
 
 .hero-buttons {
@@ -778,12 +800,26 @@ button:hover {
   gap: 12px;
 }
 
+.hero-buttons button {
+  padding: 12px 22px;
+  border-radius: 9px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.hero-buttons button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
 .hero-card {
   background: white;
-  border: 1px solid #eee;
-  border-radius: 16px;
+  border: 1px solid #e8eaf2;
+  border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 }
 
 .hero-card-header {
@@ -792,14 +828,18 @@ button:hover {
   align-items: center;
   margin-bottom: 16px;
   font-weight: 700;
+  color: #1a1d2e;
+  font-size: 15px;
 }
 
 .verified-badge {
   font-size: 11px;
   background: honeydew;
   color: darkgreen;
-  padding: 3px 8px;
+  border: 1px solid #d0f0d8;
+  padding: 3px 10px;
   border-radius: 12px;
+  font-weight: 700;
 }
 
 .hero-apps {
@@ -812,9 +852,26 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
   background: whitesmoke;
+  border: 1px solid #f0f0f5;
+  transition: transform 0.15s;
+}
+
+.hero-app-row:hover {
+  transform: translateX(3px);
+}
+
+.hero-app-row strong {
+  font-size: 14px;
+  color: #1a1d2e;
+}
+
+.hero-app-row p {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: dimgray;
 }
 
 .stage-pill {
@@ -826,12 +883,13 @@ button:hover {
 
 .hero-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
-  padding: 24px;
+  padding: 24px 28px;
   background: white;
-  border: 1px solid #eee;
-  border-radius: 14px;
+  border: 1px solid #e8eaf2;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
 }
 
 .stat-box {
@@ -840,17 +898,20 @@ button:hover {
 
 .stat-box strong {
   display: block;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 800;
   color: #6244a0;
+  margin-bottom: 2px;
 }
 
 .stat-box span {
-  font-size: 12px;
-  color: gray;
+  font-size: 13px;
+  color: dimgray;
+  font-weight: 500;
 }
 
 .audience-strip, .how-it-works, .feature-grid-section, .difference-section {
-  padding: 60px 24px;
+  padding: 56px 24px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -863,8 +924,9 @@ button:hover {
 
 .section-heading h2 {
   font-size: 28px;
+  font-weight: 800;
   margin: 0 0 8px;
-  color: #252b45;
+  color: #1a1d2e;
 }
 
 .section-heading p {
@@ -887,6 +949,7 @@ button:hover {
   font-size: 13px;
   color: dimgray;
   font-weight: 600;
+  border: 1px solid #eee;
 }
 
 .steps-grid {
@@ -897,9 +960,15 @@ button:hover {
 
 .step-card {
   background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  border: 1px solid #e8eaf2;
+  border-radius: 14px;
   padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
 }
 
 .step-number {
@@ -921,9 +990,15 @@ button:hover {
 
 .feature-card {
   background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  border: 1px solid #e8eaf2;
+  border-radius: 14px;
   padding: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
 }
 
 .feature-icon {
@@ -933,8 +1008,8 @@ button:hover {
 
 .comparison-table {
   background: white;
-  border: 1px solid #eee;
-  border-radius: 12px;
+  border: 1px solid #e8eaf2;
+  border-radius: 14px;
   overflow: hidden;
 }
 
@@ -974,15 +1049,17 @@ button:hover {
 
 .cta-card {
   background: white;
-  border: 1px solid #eee;
+  border: 1px solid #e8eaf2;
   border-radius: 20px;
   padding: 48px 24px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.03);
 }
 
 .cta-card h2 {
   font-size: 32px;
+  font-weight: 800;
   margin: 0 0 12px;
-  color: #252b45;
+  color: #1a1d2e;
 }
 
 .highlight {
@@ -990,7 +1067,7 @@ button:hover {
 }
 
 .cta-card p {
-  color: gray;
+  color: dimgray;
   font-size: 16px;
   max-width: 500px;
   margin: 0 auto 24px;
