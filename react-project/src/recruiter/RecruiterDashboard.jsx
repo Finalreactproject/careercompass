@@ -1,11 +1,3 @@
-/**
- * Recruiter Dashboard & Hiring HQ
- *
- * Coordinates candidate pipeline management, active job postings,
- * interview scheduling, and applicant dossier review with live
- * notification dispatch to job seekers.
- */
-
 import { useState, useEffect } from 'react'
 import RecruiterStatsOverview from './dashboard/RecruiterStatsOverview'
 import RecruiterPipelineView from './dashboard/RecruiterPipelineView'
@@ -100,104 +92,53 @@ function RecruiterDashboard() {
     localStorage.setItem('recruiter_jobs', JSON.stringify(jobs))
   }, [jobs])
 
-  // Advances candidate stage, updates candidate list, syncs with applicant's applications, and emits notification
   function handleAdvanceStage(candidateId, newStage, notes = '') {
-    const targetCandidate = candidates.find((c) => c.id === candidateId)
-    if (!targetCandidate) return
+    const target = candidates.find((c) => c.id === candidateId)
+    if (!target) return
 
-    const updatedCandidates = candidates.map((c) =>
-      c.id === candidateId ? { ...c, stage: newStage, notes: notes || c.notes } : c
-    )
+    const updatedCandidates = candidates.map((c) => c.id === candidateId ? { ...c, stage: newStage, notes: notes || c.notes } : c)
     setCandidates(updatedCandidates)
 
-    if (selectedCandidate?.id === candidateId) {
+    if (selectedCandidate?.id === candidateId)
       setSelectedCandidate({ ...selectedCandidate, stage: newStage, notes: notes || selectedCandidate.notes })
-    }
 
-    // 1. Sync directly with Applicant's Applications in localStorage
+    // Sync to applicant's applications
     const storedApps = JSON.parse(localStorage.getItem('applications')) || []
-    const updatedApps = storedApps.map((app) => {
-      // match by role or company (or if it's Gladys Wanjiku)
-      if (
-        app.title.toLowerCase().includes(targetCandidate.role.toLowerCase()) ||
-        targetCandidate.name.toLowerCase().includes('gladys')
-      ) {
-        return {
-          ...app,
-          status: newStage,
-          notes: notes ? `Recruiter update: ${notes}` : `Status updated to ${newStage} by employer.`,
-        }
-      }
-      return app
-    })
-    localStorage.setItem('applications', JSON.stringify(updatedApps))
+    localStorage.setItem('applications', JSON.stringify(
+      storedApps.map((app) =>
+        app.title.toLowerCase().includes(target.role.toLowerCase())
+          ? { ...app, status: newStage, notes: notes ? `Recruiter: ${notes}` : `Updated to ${newStage}.` }
+          : app
+      )
+    ))
 
-    // 2. If moved to Interview, sync with Scheduled Interviews list
+    // If Interview, add to candidate's interview list
     if (newStage === 'Interview') {
-      const storedInterviews = JSON.parse(localStorage.getItem('interviews')) || []
-      const interviewExists = storedInterviews.some((iv) => iv.role === targetCandidate.role)
-      if (!interviewExists) {
-        storedInterviews.unshift({
-          id: 'iv-' + Date.now(),
-          company: 'Safaricom PLC',
-          role: targetCandidate.role,
-          round: targetCandidate.interviewRound || 'Technical Round',
-          date: targetCandidate.interviewDate || 'Aug 24, 2026 at 10:00 AM',
-          time: '10:00 AM',
-          status: 'Upcoming',
-          location: 'Nairobi HQ / Google Meet',
-          meetingLink: 'https://meet.google.com/saf-interview-call',
-        })
-        localStorage.setItem('interviews', JSON.stringify(storedInterviews))
+      const ivList = JSON.parse(localStorage.getItem('interviews')) || []
+      if (!ivList.some((iv) => iv.role === target.role)) {
+        ivList.unshift({ id: 'iv-' + Date.now(), company: 'Safaricom PLC', role: target.role, round: target.interviewRound || 'Technical Round', date: target.interviewDate || 'Aug 24, 2026', time: '10:00 AM', status: 'Upcoming', location: 'Nairobi HQ / Google Meet', meetingLink: 'https://meet.google.com/saf-interview-call' })
+        localStorage.setItem('interviews', JSON.stringify(ivList))
       }
     }
 
-    // 3. Dispatch Notification for the Job Seeker
-    const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
-    const newNotification = {
-      id: 'notif-' + Date.now(),
-      title: `Application Update: ${targetCandidate.role}`,
-      message: `Your application has advanced to "${newStage}" stage. ${notes ? `Note: "${notes}"` : ''}`,
-      date: 'Just now',
-      unread: true,
-    }
-    localStorage.setItem('applicant_notifications', JSON.stringify([newNotification, ...notifications]))
+    // Notify job seeker
+    const notifs = JSON.parse(localStorage.getItem('applicant_notifications')) || []
+    localStorage.setItem('applicant_notifications', JSON.stringify([{ id: 'notif-' + Date.now(), title: `Update: ${target.role}`, message: `Your application moved to "${newStage}".${notes ? ` Note: "${notes}"` : ''}`, date: 'Just now', unread: true }, ...notifs]))
 
-    // 4. Trigger live updates across views
     window.dispatchEvent(new Event('applicationsUpdated'))
     window.dispatchEvent(new Event('notificationsUpdated'))
   }
 
   function handlePostJob(jobData) {
-    const recruiterData = JSON.parse(localStorage.getItem('recruiter_profile') || '{}')
-    const company = recruiterData.companyName || 'Safaricom PLC'
-    const newJobObj = {
-      id: 'rj-' + Date.now(),
-      company,
-      title: jobData.title,
-      type: jobData.type,
-      location: jobData.location,
-      salary: jobData.salary,
-      skills: jobData.skills || ['React', 'JavaScript'],
-      experience: jobData.experience || 'Entry level',
-      description: jobData.description || 'Open position for student & graduate candidates.',
-      status: 'Active',
-    }
-    const updatedJobs = [newJobObj, ...jobs]
+    const company = JSON.parse(localStorage.getItem('recruiter_profile') || '{}').companyName || 'Safaricom PLC'
+    const newJob = { id: 'rj-' + Date.now(), company, ...jobData, skills: jobData.skills || ['React', 'JavaScript'], experience: jobData.experience || 'Entry level', description: jobData.description || 'Open position for graduate candidates.', status: 'Active' }
+    const updatedJobs = [newJob, ...jobs]
     setJobs(updatedJobs)
     localStorage.setItem('recruiter_jobs', JSON.stringify(updatedJobs))
     setShowPostModal(false)
 
-    // Notify job seekers
-    const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
-    const newNotification = {
-      id: 'notif-' + Date.now(),
-      title: 'New Verified Job Posted 🚀',
-      message: `${jobData.title} at ${company} is now open for applications in ${jobData.location}.`,
-      date: 'Just now',
-      unread: true,
-    }
-    localStorage.setItem('applicant_notifications', JSON.stringify([newNotification, ...notifications]))
+    const notifs = JSON.parse(localStorage.getItem('applicant_notifications')) || []
+    localStorage.setItem('applicant_notifications', JSON.stringify([{ id: 'notif-' + Date.now(), title: 'New Job Posted 🚀', message: `${jobData.title} at ${company} — now open in ${jobData.location}.`, date: 'Just now', unread: true }, ...notifs]))
     window.dispatchEvent(new Event('notificationsUpdated'))
   }
 
@@ -210,12 +151,7 @@ function RecruiterDashboard() {
     setShowScheduleModal(false)
   }
 
-  const stats = {
-    jobsCount: jobs.length,
-    candidatesCount: candidates.length,
-    interviewCount: candidates.filter((c) => c.stage === 'Interview').length,
-    offersCount: candidates.filter((c) => c.stage === 'Offer' || c.stage === 'Accepted').length,
-  }
+  const stats = { jobsCount: jobs.length, candidatesCount: candidates.length, interviewCount: candidates.filter((c) => c.stage === 'Interview').length, offersCount: candidates.filter((c) => c.stage === 'Offer' || c.stage === 'Accepted').length }
 
   return (
     <main className="main-content">

@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 export const STAGES = ['All', 'Applied', 'Screening', 'Interview', 'Offer', 'Accepted']
 
-// Candidate pipeline table with search, stage filters, and stage advancement
 function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage }) {
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState('All')
@@ -16,7 +15,6 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
 
   return (
     <div>
-      {/* Search & Stage Filters */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
         <input
           className="search-input"
@@ -39,9 +37,8 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
         </div>
       </div>
 
-      {/* Candidate Rows */}
       {filtered.length === 0 ? (
-        <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: 10, padding: 30, textAlign: 'center', color: '#888' }}>
+        <div style={{ background: 'white', border: '1px solid lightgray', borderRadius: 10, padding: 30, textAlign: 'center', color: 'gray' }}>
           No candidates found for this filter.
         </div>
       ) : (
@@ -51,22 +48,22 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
               <div className="app-info">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                   <strong style={{ fontSize: 16 }}>{c.name}</strong>
-                  <span style={{ fontSize: 11, background: '#e8f5e9', color: '#2e7d32', padding: '2px 8px', borderRadius: 10, fontWeight: 700 }}>
+                  <span style={{ fontSize: 11, background: 'honeydew', color: 'darkgreen', padding: '2px 8px', borderRadius: 10, fontWeight: 700 }}>
                     ATS {c.atsScore}%
                   </span>
-                  <span style={{ fontSize: 11, background: '#f0e6ff', color: '#6244a0', padding: '2px 8px', borderRadius: 10, fontWeight: 600 }}>
+                  <span style={{ fontSize: 11, background: 'lavender', color: 'darkblue', padding: '2px 8px', borderRadius: 10, fontWeight: 600 }}>
                     {c.stage}
                   </span>
                 </div>
 
-                <span style={{ color: '#555', fontSize: 13, marginTop: 2 }}>
+                <span style={{ color: 'dimgray', fontSize: 13, marginTop: 2 }}>
                   Applying for: <strong>{c.role}</strong> · 🎓 {c.university}
                 </span>
-                <small style={{ color: '#888' }}>📧 {c.email} | 📞 {c.phone}</small>
+                <small style={{ color: 'gray' }}>📧 {c.email} | 📞 {c.phone}</small>
 
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                   {c.skills?.map((s) => (
-                    <span key={s} style={{ background: '#f0f0f0', color: '#555', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
+                    <span key={s} style={{ background: 'whitesmoke', color: 'dimgray', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
                       {s}
                     </span>
                   ))}

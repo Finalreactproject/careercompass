@@ -1,4 +1,3 @@
-// Simple SVG path showing: Discover → Apply → Interview → Offer
 const STOPS = [
   { label: 'Discover', y: 40 },
   { label: 'Apply', y: 190 },
@@ -17,22 +16,26 @@ function JourneyPath() {
 
   return (
     <svg viewBox="0 0 240 540" style={{ width: '100%', maxWidth: 240 }} aria-hidden="true">
-      <path d={pathString} fill="none" stroke="#ddd" strokeWidth="2" />
+      <path d={pathString} fill="none" stroke="lightgray" strokeWidth="2" />
       {STOPS.map((stop, i) => {
         const x = i % 2 === 0 ? 70 : 170
         const isLast = i === STOPS.length - 1
         return (
           <g key={stop.label}>
-            <circle cx={x} cy={stop.y} r={isLast ? 9 : 6}
-              fill={isLast ? '#6244a0' : '#fff'}
-              stroke={isLast ? '#6244a0' : '#bbb'}
-              strokeWidth="2" />
+            <circle
+              cx={x}
+              cy={stop.y}
+              r={isLast ? 9 : 6}
+              fill={isLast ? 'darkslateblue' : 'white'}
+              stroke={isLast ? 'darkslateblue' : 'darkgray'}
+              strokeWidth="2"
+            />
             <text
               x={i % 2 === 0 ? x + 18 : x - 18}
               y={stop.y}
               textAnchor={i % 2 === 0 ? 'start' : 'end'}
               dominantBaseline="central"
-              style={{ fontSize: 13, fill: isLast ? '#6244a0' : '#666', fontWeight: isLast ? 700 : 400 }}
+              style={{ fontSize: 13, fill: isLast ? 'darkslateblue' : 'dimgray', fontWeight: isLast ? 700 : 400 }}
             >
               {stop.label}
             </text>

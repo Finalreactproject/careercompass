@@ -32,37 +32,10 @@ function JobDiscovery() {
   useEffect(() => {
     async function loadJobs() {
       try {
-        const apiData = await fetchJobs();
-        const storedRecruiterJobs = JSON.parse(localStorage.getItem('recruiter_jobs') || '[]');
-        const recruiterFormatted = storedRecruiterJobs.map((rj) => ({
-          id: rj.id,
-          title: rj.title,
-          company_name: rj.company || 'Verified Employer',
-          candidate_required_location: rj.location || 'Nairobi (Hybrid)',
-          job_type: rj.type ? rj.type.toLowerCase().replace('-', '_') : 'full_time',
-          description: rj.description || 'Verified job opening on CareerCompass platform.',
-          url: '#',
-          salary: rj.salary,
-          skills: rj.skills,
-        }));
-        setJobs([...recruiterFormatted, ...apiData]);
+        const data = await fetchJobs();
+        setJobs(data);
       } catch {
-        const storedRecruiterJobs = JSON.parse(localStorage.getItem('recruiter_jobs') || '[]');
-        if (storedRecruiterJobs.length > 0) {
-          setJobs(storedRecruiterJobs.map((rj) => ({
-            id: rj.id,
-            title: rj.title,
-            company_name: rj.company || 'Verified Employer',
-            candidate_required_location: rj.location || 'Nairobi (Hybrid)',
-            job_type: rj.type ? rj.type.toLowerCase().replace('-', '_') : 'full_time',
-            description: rj.description || 'Verified job opening on CareerCompass platform.',
-            url: '#',
-            salary: rj.salary,
-            skills: rj.skills,
-          })));
-        } else {
-          setError("Failed to load jobs.");
-        }
+        setError("Failed to load jobs.");
       } finally {
         setLoading(false);
       }
@@ -72,25 +45,19 @@ function JobDiscovery() {
   }, []);
 
   if (loading) {
-    return (
-      <main className="job-discovery">
-        <p style={{ padding: 40, textAlign: 'center', color: '#666' }}>Loading jobs...</p>
-      </main>
-    );
+    return <p>Loading jobs...</p>;
   }
 
   if (error) {
-    return (
-      <main className="job-discovery">
-        <p style={{ padding: 40, textAlign: 'center', color: '#e53935' }}>{error}</p>
-      </main>
-    );
+    return <p>{error}</p>;
   }
 
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch =
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchText = [job.title, job.description, ...(job.tags || [])]
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch = searchText.includes(searchTerm.trim().toLowerCase());
 
     const matchesLocation = locationFilter
       ? job.candidate_required_location
@@ -119,8 +86,8 @@ function JobDiscovery() {
   return (
     <main className="job-discovery">
       <div className="job-discovery-header">
-        <h1>Discover Jobs 🔍</h1>
-        <p>Find your next opportunity from top tech companies and verified recruiters.</p>
+        <h1>Discover Jobs</h1>
+        <p>Find your next opportunity.</p>
       </div>
 
       <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
@@ -131,7 +98,6 @@ function JobDiscovery() {
           onChange={(event) => setLocationFilter(event.target.value)}
         >
           <option value="">All Locations</option>
-          <option value="Nairobi">Nairobi / Kenya</option>
           <option value="Remote">Remote</option>
           <option value="USA">USA</option>
           <option value="UK">UK</option>
@@ -146,7 +112,6 @@ function JobDiscovery() {
           <option value="full_time">Full-Time</option>
           <option value="part_time">Part-Time</option>
           <option value="contract">Contract</option>
-          <option value="internship">Internship</option>
         </select>
       </div>
 
@@ -168,4 +133,3 @@ function JobDiscovery() {
 }
 
 export default JobDiscovery;
-

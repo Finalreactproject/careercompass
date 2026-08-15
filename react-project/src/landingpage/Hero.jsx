@@ -23,16 +23,16 @@ function Hero({ onLogin }) {
 
           <div className="hero-apps">
             {[
-              { role: 'Frontend Developer', company: 'Safaricom PLC', stage: 'Interview', color: '#3b82f6' },
-              { role: 'Product Designer', company: 'M-KOPA Africa', stage: 'Offer', color: '#8b5cf6' },
-              { role: 'Data Analyst', company: 'Equity Group', stage: 'Screening', color: '#f59e0b' },
+              { role: 'Frontend Developer', company: 'Safaricom PLC', stage: 'Interview', bg: 'aliceblue', color: 'royalblue' },
+              { role: 'Product Designer', company: 'M-KOPA Africa', stage: 'Offer', bg: 'lavender', color: 'darkslateblue' },
+              { role: 'Data Analyst', company: 'Equity Group', stage: 'Screening', bg: 'papayawhip', color: 'darkgoldenrod' },
             ].map((app) => (
               <div key={app.role} className="hero-app-row">
                 <div>
                   <strong>{app.role}</strong>
                   <p>{app.company}</p>
                 </div>
-                <span style={{ background: app.color + '20', color: app.color }} className="stage-pill">
+                <span style={{ background: app.bg, color: app.color }} className="stage-pill">
                   {app.stage}
                 </span>
               </div>

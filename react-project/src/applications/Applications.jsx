@@ -1,249 +1,182 @@
 import { useState, useEffect } from 'react'
 
-const STATUSES = ['Saved', 'Applied', 'Screening', 'Interview', 'Offer', 'Accepted', 'Rejected']
+const STAGES = ['All', 'Saved', 'Applied', 'Interview', 'Offer', 'Not Selected']
+
+const COLORS = {
+  Saved:          { bg: 'lavender',       color: 'darkblue' },
+  Applied:        { bg: 'lemonchiffon',   color: 'darkorange' },
+  Interview:      { bg: 'lightcyan',      color: 'steelblue' },
+  Offer:          { bg: 'honeydew',       color: 'darkgreen' },
+  'Not Selected': { bg: 'whitesmoke',     color: 'gray' },
+}
 
 const DEFAULT_APPS = [
-  {
-    id: 'app-1',
-    title: 'Frontend Developer',
-    company: 'Safaricom PLC',
-    location: 'Nairobi (Hybrid)',
-    status: 'Interview',
-    date: 'Aug 10, 2026',
-    source: 'careercompass',
-    notes: 'Passed initial screening. Technical interview scheduled for Aug 24.',
-  },
-  {
-    id: 'app-2',
-    title: 'Product Designer',
-    company: 'M-KOPA Africa',
-    location: 'Nairobi',
-    status: 'Offer',
-    date: 'Aug 4, 2026',
-    source: 'careercompass',
-    notes: 'Received official offer letter. Reviewing compensation package.',
-  },
-  {
-    id: 'app-3',
-    title: 'Associate Data Analyst',
-    company: 'Equity Group',
-    location: 'Nairobi HQ',
-    status: 'Screening',
-    date: 'Aug 12, 2026',
-    source: 'careercompass',
-    notes: 'Application submitted with ATS score 94%.',
-  },
-  {
-    id: 'app-4',
-    title: 'Junior Cloud Developer',
-    company: 'AWS Community Kenya',
-    location: 'Remote',
-    status: 'Applied',
-    date: 'Aug 14, 2026',
-    source: 'external_api',
-    notes: 'Applied online. Self-tracking progress.',
-  },
+  { id: 'app-1', title: 'Frontend Developer',    company: 'Safaricom PLC',       location: 'Nairobi (Hybrid)', status: 'Interview', date: 'Aug 10, 2026', source: 'careercompass', notes: 'Technical interview scheduled for Aug 24.' },
+  { id: 'app-2', title: 'Product Designer',       company: 'M-KOPA Africa',       location: 'Nairobi',          status: 'Offer',      date: 'Aug 4, 2026',  source: 'careercompass', notes: 'Received offer letter. Reviewing package.' },
+  { id: 'app-3', title: 'Associate Data Analyst', company: 'Equity Group',        location: 'Nairobi HQ',       status: 'Applied',    date: 'Aug 12, 2026', source: 'careercompass', notes: 'ATS score 94%.' },
+  { id: 'app-4', title: 'Junior Cloud Developer', company: 'AWS Community Kenya', location: 'Remote',           status: 'Saved',      date: 'Aug 14, 2026', source: 'external_api', notes: 'Saved for later.' },
 ]
 
-// Applications board: shows tracked jobs, live employer status, and notifications
-function Applications({ onViewDetails, onNavigateToJobs }) {
-  const [apps, setApps] = useState(() => {
-    const saved = localStorage.getItem('applications')
-    return saved ? JSON.parse(saved) : DEFAULT_APPS
-  })
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('All')
-  const [showNotifications, setShowNotifications] = useState(false)
-  const [notifications, setNotifications] = useState(() => {
-    return JSON.parse(localStorage.getItem('applicant_notifications')) || [
-      {
-        id: 'notif-1',
-        title: 'Interview Scheduled: Frontend Developer',
-        message: 'Safaricom scheduled your Technical Interview for Aug 24 at 10:00 AM.',
-        date: 'Today',
-        unread: true,
-      },
-    ]
-  })
+function Tag({ status }) {
+  const c = COLORS[status] || { bg: 'whitesmoke', color: 'gray' }
+  return <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20, fontWeight: 700, background: c.bg, color: c.color }}>{status}</span>
+}
 
-  // Listen for real-time status updates from recruiters
+function Applications({ onViewDetails, onNavigateToJobs }) {
+  const [apps, setApps] = useState(() => JSON.parse(localStorage.getItem('applications')) || DEFAULT_APPS)
+  const [search, setSearch] = useState('')
+  const [stage, setStage] = useState('All')
+  const [showAlerts, setShowAlerts] = useState(false)
+  const [alerts, setAlerts] = useState(() =>
+    JSON.parse(localStorage.getItem('applicant_notifications')) || [
+      { id: 'n1', title: 'Interview Scheduled: Frontend Developer', message: 'Safaricom scheduled your Technical Interview for Aug 24 at 10:00 AM.', date: 'Today', unread: true },
+    ]
+  )
+
   useEffect(() => {
-    function loadFreshData() {
+    function refresh() {
       const stored = localStorage.getItem('applications')
       if (stored) setApps(JSON.parse(stored))
       const notifs = localStorage.getItem('applicant_notifications')
-      if (notifs) setNotifications(JSON.parse(notifs))
+      if (notifs) setAlerts(JSON.parse(notifs))
     }
-    window.addEventListener('applicationsUpdated', loadFreshData)
-    window.addEventListener('notificationsUpdated', loadFreshData)
+    window.addEventListener('applicationsUpdated', refresh)
+    window.addEventListener('notificationsUpdated', refresh)
     return () => {
-      window.removeEventListener('applicationsUpdated', loadFreshData)
-      window.removeEventListener('notificationsUpdated', loadFreshData)
+      window.removeEventListener('applicationsUpdated', refresh)
+      window.removeEventListener('notificationsUpdated', refresh)
     }
   }, [])
 
-  // Manually update stage (for external jobs)
-  function handleStatusChange(id, newStatus) {
-    const updated = apps.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
+  function moveStage(id, newStage) {
+    const updated = apps.map((a) => a.id === id ? { ...a, status: newStage } : a)
     setApps(updated)
     localStorage.setItem('applications', JSON.stringify(updated))
     window.dispatchEvent(new Event('applicationsUpdated'))
   }
 
-  // Delete an application
-  function handleDelete(id) {
+  function remove(id) {
     const updated = apps.filter((a) => a.id !== id)
     setApps(updated)
     localStorage.setItem('applications', JSON.stringify(updated))
     window.dispatchEvent(new Event('applicationsUpdated'))
   }
 
-  // Mark all notifications as read
-  function handleOpenNotifications() {
-    setShowNotifications(!showNotifications)
-    if (!showNotifications) {
-      const read = notifications.map((n) => ({ ...n, unread: false }))
-      setNotifications(read)
-      localStorage.setItem('applicant_notifications', JSON.stringify(read))
-    }
+  function toggleAlerts() {
+    setShowAlerts((prev) => !prev)
+    const read = alerts.map((a) => ({ ...a, unread: false }))
+    setAlerts(read)
+    localStorage.setItem('applicant_notifications', JSON.stringify(read))
   }
 
-  const unreadCount = notifications.filter((n) => n.unread).length
+  const unread = alerts.filter((a) => a.unread).length
 
-  const filteredApps = apps.filter((a) => {
+  const visible = apps.filter((a) => {
     const q = search.toLowerCase()
-    const matchesQuery = !q || a.title?.toLowerCase().includes(q) || a.company?.toLowerCase().includes(q)
-    const matchesStage = statusFilter === 'All' || a.status === statusFilter
-    return matchesQuery && matchesStage
+    const matchSearch = !q || a.title?.toLowerCase().includes(q) || a.company?.toLowerCase().includes(q)
+    const matchStage = stage === 'All' || a.status === stage
+    return matchSearch && matchStage
   })
 
   return (
     <main className="main-content">
-      {/* Header bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <h1 style={{ margin: 0 }}>My Applications 📋</h1>
-            <button
-              className="btn-outline"
-              style={{ padding: '4px 10px', fontSize: 13 }}
-              onClick={handleOpenNotifications}
-            >
-              🔔 {unreadCount > 0 ? `${unreadCount} New Alerts` : 'Notifications'}
+            <button className="btn-outline" style={{ padding: '4px 10px', fontSize: 13 }} onClick={toggleAlerts}>
+              🔔 {unread > 0 ? `${unread} New` : 'Alerts'}
             </button>
           </div>
-          <p style={{ margin: '4px 0 0', color: '#888' }}>
-            {apps.length} total applications · Platform roles are updated live by employers.
-          </p>
+          <p style={{ margin: '4px 0 0', color: 'gray' }}>{apps.length} tracked applications</p>
         </div>
-
-        {/* Redirects to discover jobs page */}
-        <button onClick={onNavigateToJobs}>
-          + Add Application (Discover Jobs)
-        </button>
+        <button onClick={onNavigateToJobs}>+ Discover Jobs</button>
       </div>
 
-      {/* Notifications Drawer */}
-      {showNotifications && (
-        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 10, padding: 16, marginBottom: 20 }}>
+      {showAlerts && (
+        <div style={{ background: 'white', border: '1px solid lightgray', borderRadius: 10, padding: 16, marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-            <strong>Recent Application Alerts</strong>
-            <button className="btn-outline" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => setShowNotifications(false)}>Close</button>
+            <strong>Recent Alerts</strong>
+            <button className="btn-outline" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => setShowAlerts(false)}>Close</button>
           </div>
-          {notifications.length === 0 ? (
-            <p style={{ color: '#888', margin: 0, fontSize: 13 }}>No alerts yet.</p>
-          ) : (
-            notifications.slice(0, 4).map((n) => (
-              <div key={n.id} style={{ background: n.unread ? '#f0f4ff' : '#fafafa', padding: 10, borderRadius: 8, marginBottom: 6, fontSize: 13 }}>
+          {alerts.length === 0
+            ? <p style={{ color: 'gray', margin: 0, fontSize: 13 }}>No alerts yet.</p>
+            : alerts.slice(0, 4).map((n) => (
+              <div key={n.id} style={{ background: n.unread ? 'lavender' : 'whitesmoke', padding: 10, borderRadius: 8, marginBottom: 6, fontSize: 13 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
                   <span>{n.title}</span>
-                  <span style={{ fontSize: 11, color: '#888' }}>{n.date}</span>
+                  <span style={{ fontSize: 11, color: 'gray' }}>{n.date}</span>
                 </div>
-                <div style={{ color: '#555', marginTop: 2 }}>{n.message}</div>
+                <div style={{ color: 'dimgray', marginTop: 2 }}>{n.message}</div>
               </div>
             ))
-          )}
+          }
         </div>
       )}
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
-        <input
-          className="search-input"
-          style={{ flex: 1, minWidth: 220, margin: 0 }}
-          placeholder="Search by company or title..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #ddd', background: '#fff', fontSize: 13 }}
-        >
-          <option value="All">All Stages ({apps.length})</option>
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{s} ({apps.filter((a) => a.status === s).length})</option>
-          ))}
-        </select>
+      <input
+        className="search-input"
+        style={{ width: '100%', marginBottom: 16, boxSizing: 'border-box' }}
+        placeholder="Search by job title or company..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* Stage filter pills */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
+        {STAGES.map((s) => {
+          const count = s === 'All' ? apps.length : apps.filter((a) => a.status === s).length
+          const active = stage === s
+          const c = COLORS[s] || { bg: 'lavender', color: 'darkblue' }
+          return (
+            <button
+              key={s}
+              onClick={() => setStage(s)}
+              style={{
+                padding: '6px 14px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
+                border: active ? '2px solid currentColor' : '1px solid lightgray',
+                background: active ? c.bg : 'white',
+                color: active ? c.color : 'dimgray',
+                fontWeight: active ? 700 : 400,
+              }}
+            >
+              {s} ({count})
+            </button>
+          )
+        })}
       </div>
 
-      {/* Applications list */}
-      {filteredApps.length === 0 ? (
-        <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: 12, padding: 40, textAlign: 'center' }}>
-          <p style={{ color: '#888', margin: '0 0 14px' }}>No applications match this filter.</p>
+      {visible.length === 0 ? (
+        <div style={{ background: 'white', border: '1px solid lightgray', borderRadius: 12, padding: 40, textAlign: 'center' }}>
+          <p style={{ color: 'gray', margin: '0 0 14px' }}>No applications here yet.</p>
           <button onClick={onNavigateToJobs}>Discover Jobs</button>
         </div>
       ) : (
         <div className="apps-list">
-          {filteredApps.map((app) => {
-            const isPlatform = app.source !== 'external_api'
-
-            return (
-              <div key={app.id} className="app-row">
-                <div className="app-info">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                    <strong style={{ fontSize: 16 }}>{app.title}</strong>
-                    <span style={{ fontSize: 11, background: isPlatform ? '#f0e6ff' : '#e0f2fe', color: isPlatform ? '#6244a0' : '#0284c7', padding: '2px 8px', borderRadius: 8, fontWeight: 600 }}>
-                      {isPlatform ? '⚡ CareerCompass Verified' : '🌐 External Job'}
-                    </span>
-                    <span style={{ fontSize: 11, background: '#f8f8fc', color: '#252b45', padding: '2px 8px', borderRadius: 8, fontWeight: 600, border: '1px solid #eee' }}>
-                      {app.status}
-                    </span>
-                  </div>
-                  <span>🏢 {app.company} {app.location ? `· 📍 ${app.location}` : ''}</span>
-                  <small style={{ color: '#666' }}>{app.notes || 'No recent notes'}</small>
+          {visible.map((app) => (
+            <div key={app.id} className="app-row">
+              <div className="app-info">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                  <strong style={{ fontSize: 15 }}>{app.title}</strong>
+                  <Tag status={app.status} />
                 </div>
-
-                <div className="app-actions">
-                  {/* External jobs allow manual stage selection */}
-                  {!isPlatform ? (
-                    <select
-                      value={app.status}
-                      onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                    >
-                      {STATUSES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <span style={{ fontSize: 12, color: '#6244a0', background: '#f8f6ff', padding: '6px 10px', borderRadius: 8 }}>
-                      Recruiter Managed
-                    </span>
-                  )}
-
-                  {onViewDetails && (
-                    <button className="btn-outline" onClick={() => onViewDetails(app)}>
-                      View Details
-                    </button>
-                  )}
-
-                  <button className="btn-danger" onClick={() => handleDelete(app.id)}>
-                    Remove
-                  </button>
-                </div>
+                <span style={{ fontSize: 13, color: 'dimgray' }}>🏢 {app.company}{app.location ? ` · 📍 ${app.location}` : ''}</span>
+                {app.notes && <small style={{ display: 'block', color: 'gray', marginTop: 4 }}>{app.notes}</small>}
               </div>
-            )
-          })}
+
+              <div className="app-actions">
+                <select
+                  value={app.status}
+                  onChange={(e) => moveStage(app.id, e.target.value)}
+                  style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid lightgray', fontSize: 13 }}
+                >
+                  {STAGES.filter((s) => s !== 'All').map((s) => <option key={s}>{s}</option>)}
+                </select>
+                {onViewDetails && <button className="btn-outline" onClick={() => onViewDetails(app)}>View Details</button>}
+                <button className="btn-danger" onClick={() => remove(app.id)}>Remove</button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </main>

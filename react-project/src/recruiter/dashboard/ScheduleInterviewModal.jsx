@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-// Modal form for scheduling an interview with an applicant
 function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
   const [candidateId, setCandidateId] = useState('')
   const [date, setDate] = useState('Aug 24, 2026')

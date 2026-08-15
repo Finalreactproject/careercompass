@@ -37,23 +37,22 @@ function AudienceStrip() {
           <div
             key={item.title}
             style={{
-              background: '#fff',
-              border: '1px solid #e8eaf2',
+              background: 'white',
+              border: '1px solid lightgray',
               borderRadius: 12,
               padding: 22,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <h3 style={{ margin: 0, fontSize: 17, color: '#1a1d2e' }}>{item.title}</h3>
-              <span style={{ fontSize: 11, fontWeight: 600, background: '#f0ecf9', color: '#6244a0', padding: '2px 8px', borderRadius: 12 }}>
+              <h3 style={{ margin: 0, fontSize: 17, color: 'midnightblue' }}>{item.title}</h3>
+              <span style={{ fontSize: 11, fontWeight: 600, background: 'lavender', color: 'darkslateblue', padding: '2px 8px', borderRadius: 12 }}>
                 {item.tag}
               </span>
             </div>
-            <p style={{ fontSize: 13.5, color: '#5b6275', lineHeight: 1.5, margin: '0 0 14px' }}>
+            <p style={{ fontSize: 13.5, color: 'dimgray', lineHeight: 1.5, margin: '0 0 14px' }}>
               {item.desc}
             </p>
-            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: '#444', lineHeight: 1.7 }}>
+            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, color: 'dimgray', lineHeight: 1.7 }}>
               {item.perks.map((perk, i) => (
                 <li key={i}>{perk}</li>
               ))}
@@ -63,7 +62,7 @@ function AudienceStrip() {
       </div>
 
       <div className="employer-strip" style={{ marginTop: 40 }}>
-        <p style={{ textAlign: 'center', fontSize: 13, color: '#777', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 14 }}>
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'gray', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 14 }}>
           Trusted by talent aiming for top companies
         </p>
         <div className="employer-scroll">
