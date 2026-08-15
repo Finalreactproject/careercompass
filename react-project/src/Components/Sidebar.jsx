@@ -8,7 +8,7 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
     ? (recruiterData.recruiterName ? `${recruiterData.recruiterName} · Recruiter` : 'Verified Employer')
     : profile?.experienceLevel || 'Student'
 
-  const activeStyle = { background: isRecruiter ? '#1976d2' : '#6244a0', color: '#fff' }
+  const activeStyle = { background: isRecruiter ? 'steelblue' : 'darkslateblue', color: 'white' }
 
   return (
     <aside className="sidebar">
@@ -93,7 +93,7 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
 
       <button
         className="btn-outline"
-        style={{ fontSize: 12, marginTop: 12, color: '#e53935', borderColor: '#ffcdd2' }}
+        style={{ fontSize: 12, marginTop: 12, color: 'crimson', borderColor: 'lightpink' }}
         onClick={onLogout}
       >
         🚪 Log Out

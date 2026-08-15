@@ -5,7 +5,7 @@ import Profile from './profile/Profile'
 import EditProfile from './profile/EditProfile'
 import OverviewCards from './Components/OverviewCards'
 import RecentApplications from './Components/RecentApplication'
-import DiscoverJobs from './JobDiscovery/JobDiscovery'
+import JobDiscovery from './JobDiscovery/JobDiscovery'
 import CVCenter from './CV page/CvCenter'
 import Applications from './applications/Applications'
 import ApplicationDetails from './applications/ApplicationDetails'
@@ -134,7 +134,7 @@ function App() {
           </main>
         )
       case 'jobs':
-        return <DiscoverJobs onNavigateToApplications={() => navigateTo('applications')} />
+        return <JobDiscovery onNavigateToApplications={() => navigateTo('applications')} />
       case 'applications':
         return renderApplications()
       case 'interviews':
