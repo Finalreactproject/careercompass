@@ -1,12 +1,8 @@
 import { useState } from "react";
-
-// Reference screenshots — save the three Full Stack CV example images into
-// your assets folder with these names (or update the paths).
 import darkTemplateImg from "../assets/FullStack Dark.jpg";
 import blueTemplateImg from "../assets/FullStackBlue.webp";
 import greenTemplateImg from "../assets/FullStackGreen.jpg";
 
-// ---------- Shared colors ----------
 const DARK = "#2B2B2B";
 const BLUE = "#2E7BD6";
 const GREEN = "#0E4B42";
@@ -17,7 +13,6 @@ const BORDER = "#E5E7EB";
 let idCounter = 400;
 const nextId = () => `item-${idCounter++}`;
 
-// ---------- Shared generic state helpers ----------
 function updateField(setState, field, value) {
   setState((prev) => ({ ...prev, [field]: value }));
 }

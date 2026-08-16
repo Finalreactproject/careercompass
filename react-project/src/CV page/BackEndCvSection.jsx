@@ -1,12 +1,8 @@
 import { useState } from "react";
-
-// Reference screenshots — save the three Backend CV example images into
-// your assets folder with these names (or update the paths).
 import geometricTemplateImg from "../assets/BackEndGreen.jpg";
 import darkCreamTemplateImg from "../assets/BackEndGrey.png";
 import purpleTemplateImg from "../assets/BackEndPurple.jpg";
 
-// ---------- Shared colors ----------
 const CHARCOAL = "#2E2E2E";
 const TEAL = "#0F6B5C";
 const NAVY = "#2B2E3B";
@@ -19,7 +15,6 @@ const BORDER = "#E5E7EB";
 let idCounter = 300;
 const nextId = () => `item-${idCounter++}`;
 
-// ---------- Shared generic state helpers ----------
 function updateField(setState, field, value) {
   setState((prev) => ({ ...prev, [field]: value }));
 }
@@ -842,13 +837,9 @@ function BackEndCvDarkCream(props) {
                 marginBottom: "10px",
               }}
             >
-              <span style={{ marginRight: "8px" }}>
-                {field === "email" && "✉️"}
-                {field === "phone" && "📞"}
-                {field === "location" && "📍"}
-              </span>
               <input
                 style={fieldStyle}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                 value={personal[field]}
                 onChange={(e) =>
                   updateField(setPersonal, field, e.target.value)

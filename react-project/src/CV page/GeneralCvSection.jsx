@@ -1,12 +1,8 @@
 import { useState } from "react";
-
-// Reference screenshots — drop the three template images into your assets
-// folder with these names (or update the paths to match your project).
 import sageTemplateImg from "../assets/Screenshot 2026-08-11 at 17.31.30.png";
 import maroonTemplateImg from "../assets/Screenshot 2026-08-11 at 17.30.58.png";
 import blueTemplateImg from "../assets/Screenshot 2026-08-11 at 17.31.15.png";
 
-// ---------- Shared colors ----------
 const SAGE = "#82A88A";
 const SAGE_LIGHT = "#A9C4AC";
 const SAGE_TEXT = "#E6EFE8";
@@ -21,7 +17,6 @@ const BORDER = "#E5E7EB";
 let idCounter = 100;
 const nextId = () => `item-${idCounter++}`;
 
-// ---------- Shared generic state helpers (used by both templates below) ----------
 function updateField(setState, field, value) {
   setState((prev) => ({ ...prev, [field]: value }));
 }
@@ -857,14 +852,9 @@ function GeneralCvMaroon(props) {
               marginBottom: "12px",
             }}
           >
-            <span style={{ marginRight: "8px" }}>
-              {field === "name" && "👤"}
-              {field === "email" && "✉️"}
-              {field === "phone" && "📞"}
-              {field === "address" && "🏠"}
-            </span>
             <input
               style={fieldStyle}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
               value={personal[field]}
               onChange={(e) => updateField(setPersonal, field, e.target.value)}
             />

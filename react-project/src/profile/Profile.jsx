@@ -11,7 +11,7 @@ function Profile({ profile, onEdit }) {
         </div>
 
         <button className="edit-profile-button" onClick={onEdit}>
-          ✎ Edit Profile
+          Edit Profile
         </button>
       </div>
 
@@ -91,7 +91,7 @@ function Profile({ profile, onEdit }) {
 
             <div className="preference-tags">
               {profile.jobTypes.map((type) => (
-                <span key={type}>☑ {type}</span>
+                <span key={type}>{type}</span>
               ))}
             </div>
 
@@ -99,7 +99,7 @@ function Profile({ profile, onEdit }) {
 
             <div className="preference-tags">
               {profile.preferredLocations.map((location) => (
-                <span key={location}>☑ {location}</span>
+                <span key={location}>{location}</span>
               ))}
             </div>
           </section>
@@ -109,7 +109,7 @@ function Profile({ profile, onEdit }) {
           <section className="profile-card career-goal">
             <h3>CAREER GOAL</h3>
 
-            <div className="goal">🎯 {profile.careerGoal}</div>
+            <div className="goal">{profile.careerGoal}</div>
 
             <p>Level: {profile.experienceLevel}</p>
           </section>

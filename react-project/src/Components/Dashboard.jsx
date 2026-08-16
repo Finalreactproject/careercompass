@@ -35,7 +35,7 @@ function Dashboard() {
       <Sidebar />
 
       <main>
-        <h1>Good morning, {localStorage.getItem("userName") || "there"} 👋</h1>
+        <h1>Good morning, {localStorage.getItem("userName") || "there"}</h1>
 
         <p>Here's what's happening with your career.</p>
 
