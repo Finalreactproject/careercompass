@@ -10,6 +10,8 @@ const INITIAL_JOBS = [
   { id: 'rj-1', title: 'Frontend Developer', type: 'Full-time', location: 'Nairobi', salary: 'KES 140k–190k', status: 'Active', deadline: 'Sep 15, 2026' },
   { id: 'rj-2', title: 'Fullstack Engineer', type: 'Full-time', location: 'Nairobi', salary: 'KES 160k–220k', status: 'Active', deadline: 'Sep 20, 2026' },
   { id: 'rj-3', title: 'Junior Data Analyst', type: 'Full-time', location: 'Remote', salary: 'KES 95k–130k', status: 'Active', deadline: 'Aug 31, 2026' },
+  { id: 'rj-4', title: 'Product Designer', type: 'Full-time', location: 'Nairobi', salary: 'KES 120k–150k', status: 'Closed', deadline: 'Jul 30, 2026' },
+  { id: 'rj-5', title: 'DevOps Engineer', type: 'Full-time', location: 'Remote', salary: 'KES 150k–200k', status: 'Pending', deadline: 'Oct 10, 2026' },
 ]
 
 const INITIAL_CANDIDATES = [
@@ -67,6 +69,19 @@ const INITIAL_CANDIDATES = [
     phone: '+254 744 556 677',
     notes: 'Fresh graduate with strong practical capstone.',
   },
+  {
+    id: 'cand-5',
+    name: 'Samuel Ochieng',
+    role: 'DevOps Engineer',
+    university: 'Kenyatta University',
+    skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+    atsScore: 92,
+    stage: 'Screening',
+    appliedDate: 'Aug 14, 2026',
+    email: 'samuel.o@example.com',
+    phone: '+254 755 667 788',
+    notes: 'Solid cloud infrastructure experience. Ready for technical interview.',
+  }
 ]
 
 function RecruiterDashboard() {

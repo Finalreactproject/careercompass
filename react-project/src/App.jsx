@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Sidebar from './Components/Sidebar'
 import Landing from './landingpage/Landing'
+import Signup from './Components/signup'
 import Profile from './profile/Profile'
 import EditProfile from './profile/EditProfile'
 import OverviewCards from './Components/OverviewCards'
@@ -16,6 +17,7 @@ import InterviewDetails from './applications/InterviewDetails'
 import RecruiterDashboard from './recruiter/RecruiterDashboard'
 import RecruiterInterviews from './recruiter/RecruiterInterviews'
 import RecruiterProfile from './recruiter/RecruiterProfile'
+
 
 const DEFAULT_PROFILE = {
   fullName: 'Gladys Wanjiku',
@@ -141,6 +143,8 @@ function App() {
         return renderInterviews()
       case 'recruiter':
         return <RecruiterDashboard />
+      case 'signup':
+        return <Signup onLogin={handleLogin} />
       case 'recruiter-interviews':
         return <RecruiterInterviews />
       case 'recruiter-profile':

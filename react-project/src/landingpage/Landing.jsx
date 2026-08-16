@@ -7,31 +7,28 @@ import FeatureGrid from './FeatureGrid'
 import DifferenceSection from './DifferenceSection'
 import CTASection from './CTASection'
 import Footer from './Footer'
-import LoginModal from './LoginModal'
+import Signup from '../Components/signup'
 
 export default function Landing({ onLogin }) {
-  const [showLogin, setShowLogin] = useState(false)
-
-  const openLogin = () => setShowLogin(true)
+  const [showSignup, setShowSignup] = useState(false)
 
   return (
     <div className="landing-page">
-      <PublicNav onLogin={openLogin} />
-      <Hero onLogin={openLogin} />
+      <PublicNav onLogin={() => setShowSignup(true)} />
+      <Hero onLogin={() => setShowSignup(true)} />
       <AudienceStrip />
       <HowItWorks />
       <FeatureGrid />
       <DifferenceSection />
-      <CTASection onLogin={openLogin} />
+      <CTASection onLogin={() => setShowSignup(true)} />
       <Footer />
 
-      {showLogin && (
-        <LoginModal
-          onClose={() => setShowLogin(false)}
+      {showSignup && (
+        <Signup
           onLogin={onLogin}
+          onClose={() => setShowSignup(false)}
         />
       )}
     </div>
   )
 }
-
