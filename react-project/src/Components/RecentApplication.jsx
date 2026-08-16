@@ -17,7 +17,6 @@ function RecentApplications({ onNavigateToApplications }) {
 
   const stageColors = {
     Applied: { bg: '#eef2ff', text: '#3730a3' },
-    Screening: { bg: '#fff7ed', text: '#c2410c' },
     Interview: { bg: '#f0fdf4', text: '#15803d' },
     Offer: { bg: '#fdf4ff', text: '#86198f' },
     Accepted: { bg: '#ecfdf5', text: '#047857' },

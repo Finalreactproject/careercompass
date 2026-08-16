@@ -1,90 +1,99 @@
 import { useState } from 'react'
 
+// Pipeline stages available for filtering candidates in the recruiter view
 export const STAGES = ['All', 'Applied', 'Screening', 'Interview', 'Offer', 'Accepted']
 
 function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage }) {
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState('All')
 
-  const filtered = candidates.filter((c) => {
-    const q = search.toLowerCase()
-    const matchesSearch = !q || c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q)
-    const matchesStage = stageFilter === 'All' || c.stage === stageFilter
+  // Filter candidates by search text (name or role) and the active stage button
+  const filteredCandidates = candidates.filter((candidate) => {
+    const searchQuery = search.toLowerCase()
+    const matchesSearch = !searchQuery || candidate.name.toLowerCase().includes(searchQuery) || candidate.role.toLowerCase().includes(searchQuery)
+    const matchesStage = stageFilter === 'All' || candidate.stage === stageFilter
     return matchesSearch && matchesStage
   })
 
   return (
     <div>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
+        {/* Search bar — filters by candidate name or role title */}
         <input
           className="search-input"
           style={{ flex: 1, minWidth: 220, margin: 0 }}
           placeholder="Search candidates by name or role..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(changeEvent) => setSearch(changeEvent.target.value)}
         />
+
+        {/* Stage filter buttons — click to narrow the list to a specific pipeline stage */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {STAGES.map((st) => (
+          {STAGES.map((stageName) => (
             <button
-              key={st}
-              className={stageFilter === st ? '' : 'btn-outline'}
+              key={stageName}
+              className={stageFilter === stageName ? '' : 'btn-outline'}
               style={{ fontSize: 12, padding: '6px 12px' }}
-              onClick={() => setStageFilter(st)}
+              onClick={() => setStageFilter(stageName)}
             >
-              {st} ({st === 'All' ? candidates.length : candidates.filter((c) => c.stage === st).length})
+              {stageName} ({stageName === 'All' ? candidates.length : candidates.filter((candidate) => candidate.stage === stageName).length})
             </button>
           ))}
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {filteredCandidates.length === 0 ? (
         <div style={{ background: 'white', border: '1px solid lightgray', borderRadius: 10, padding: 30, textAlign: 'center', color: 'gray' }}>
           No candidates found for this filter.
         </div>
       ) : (
         <div className="apps-list">
-          {filtered.map((c) => (
-            <div key={c.id} className="app-row" style={{ alignItems: 'flex-start' }}>
+          {filteredCandidates.map((candidate) => (
+            <div key={candidate.id} className="app-row" style={{ alignItems: 'flex-start' }}>
               <div className="app-info">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <strong style={{ fontSize: 16 }}>{c.name}</strong>
+                  <strong style={{ fontSize: 16 }}>{candidate.name}</strong>
                   <span style={{ fontSize: 11, background: 'honeydew', color: 'darkgreen', padding: '2px 8px', borderRadius: 10, fontWeight: 700 }}>
-                    ATS {c.atsScore}%
+                    ATS {candidate.atsScore}%
                   </span>
                   <span style={{ fontSize: 11, background: 'lavender', color: 'darkblue', padding: '2px 8px', borderRadius: 10, fontWeight: 600 }}>
-                    {c.stage}
+                    {candidate.stage}
                   </span>
                 </div>
 
                 <span style={{ color: 'dimgray', fontSize: 13, marginTop: 2 }}>
-                  Applying for: <strong>{c.role}</strong> · 🎓 {c.university}
+                  Applying for: <strong>{candidate.role}</strong> · 🎓 {candidate.university}
                 </span>
-                <small style={{ color: 'gray' }}>📧 {c.email} | 📞 {c.phone}</small>
+                <small style={{ color: 'gray' }}>📧 {candidate.email} | 📞 {candidate.phone}</small>
 
+                {/* Skill tags row */}
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
-                  {c.skills?.map((s) => (
-                    <span key={s} style={{ background: 'whitesmoke', color: 'dimgray', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
-                      {s}
+                  {candidate.skills?.map((skill) => (
+                    <span key={skill} style={{ background: 'whitesmoke', color: 'dimgray', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
+                      {skill}
                     </span>
                   ))}
                 </div>
               </div>
 
               <div className="app-actions" style={{ flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+                {/* Open the full candidate profile modal */}
                 <button
                   className="btn-outline"
                   style={{ fontSize: 12, padding: '6px 12px' }}
-                  onClick={() => onInspectCandidate(c)}
+                  onClick={() => onInspectCandidate(candidate)}
                 >
                   🔍 View Profile
                 </button>
+
+                {/* Quick stage-change dropdown — without opening the full modal */}
                 <select
-                  value={c.stage}
-                  onChange={(e) => onAdvanceStage(c.id, e.target.value)}
+                  value={candidate.stage}
+                  onChange={(changeEvent) => onAdvanceStage(candidate.id, changeEvent.target.value)}
                   style={{ fontSize: 12, padding: '5px 8px' }}
                 >
-                  {STAGES.filter((s) => s !== 'All').map((s) => (
-                    <option key={s}>{s}</option>
+                  {STAGES.filter((stageName) => stageName !== 'All').map((stageName) => (
+                    <option key={stageName}>{stageName}</option>
                   ))}
                 </select>
               </div>

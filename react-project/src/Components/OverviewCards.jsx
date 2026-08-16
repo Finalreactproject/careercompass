@@ -14,7 +14,7 @@ function OverviewCards() {
       const total = apps.length
       const interviews = apps.filter((a) => a.status === 'Interview').length
       const offers = apps.filter((a) => a.status === 'Offer' || a.status === 'Accepted').length
-      const pending = apps.filter((a) => a.status === 'Applied' || a.status === 'Screening').length
+      const pending = apps.filter((a) => a.status === 'Applied').length
 
       setCounts({ total, interviews, pending, offers })
     }

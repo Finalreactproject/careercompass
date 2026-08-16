@@ -8,15 +8,16 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
 
   if (!isOpen) return null
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  // Validates that a candidate is selected, then hands the schedule data up to the parent
+  function handleSubmit(formEvent) {
+    formEvent.preventDefault()
     if (!candidateId) return
     onSchedule({ candidateId, date, time, round })
   }
 
   return (
     <div className="edit-overlay" onClick={onClose}>
-      <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="edit-modal" onClick={(clickEvent) => clickEvent.stopPropagation()}>
         <div className="edit-header">
           <div>
             <h2>Schedule Candidate Interview</h2>
@@ -31,12 +32,12 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
             <select
               required
               value={candidateId}
-              onChange={(e) => setCandidateId(e.target.value)}
+              onChange={(changeEvent) => setCandidateId(changeEvent.target.value)}
             >
               <option value="">-- Choose Candidate --</option>
-              {candidates.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} ({c.role})
+              {candidates.map((candidate) => (
+                <option key={candidate.id} value={candidate.id}>
+                  {candidate.name} ({candidate.role})
                 </option>
               ))}
             </select>
@@ -45,17 +46,17 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
           <div className="form-grid">
             <div className="form-group">
               <label>Date</label>
-              <input value={date} onChange={(e) => setDate(e.target.value)} />
+              <input value={date} onChange={(changeEvent) => setDate(changeEvent.target.value)} />
             </div>
             <div className="form-group">
               <label>Time</label>
-              <input value={time} onChange={(e) => setTime(e.target.value)} />
+              <input value={time} onChange={(changeEvent) => setTime(changeEvent.target.value)} />
             </div>
           </div>
 
           <div className="form-group">
             <label>Interview Round</label>
-            <select value={round} onChange={(e) => setRound(e.target.value)}>
+            <select value={round} onChange={(changeEvent) => setRound(changeEvent.target.value)}>
               <option>Technical Round</option>
               <option>System Architecture</option>
               <option>STAR Behavioral Interview</option>

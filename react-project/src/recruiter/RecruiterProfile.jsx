@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const DEFAULT = {
+const DEFAULT_PROFILE = {
   companyName: 'Safaricom PLC',
   recruiterName: 'Sarah Kamau',
   recruiterRole: 'Lead Talent Acquisition Partner',
@@ -26,19 +26,21 @@ const FIELDS = [
 ]
 
 export default function RecruiterProfile() {
-  const [profile, setProfile] = useState(() => JSON.parse(localStorage.getItem('recruiter_profile')) || DEFAULT)
+  const [profile, setProfile] = useState(() => JSON.parse(localStorage.getItem('recruiter_profile')) || DEFAULT_PROFILE)
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(profile)
 
-  function save(e) {
-    e.preventDefault()
+  // Saves the edited form to state and localStorage, then closes the edit modal
+  function saveProfile(formEvent) {
+    formEvent.preventDefault()
     setProfile(form)
     localStorage.setItem('recruiter_profile', JSON.stringify(form))
     setEditing(false)
   }
 
-  function field(key, value) {
-    setForm((prev) => ({ ...prev, [key]: value }))
+  // Updates a single field in the form draft
+  function updateField(fieldKey, newValue) {
+    setForm((previousForm) => ({ ...previousForm, [fieldKey]: newValue }))
   }
 
   return (
@@ -89,8 +91,8 @@ export default function RecruiterProfile() {
         <div style={{ marginTop: 24 }}>
           <h3 style={{ fontSize: 16, margin: '0 0 10px' }}>Perks & Offerings</h3>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {profile.perks?.map((perk, i) => (
-              <span key={i} style={{ background: 'aliceblue', color: 'steelblue', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>✨ {perk}</span>
+            {profile.perks?.map((perk, perkIndex) => (
+              <span key={perkIndex} style={{ background: 'aliceblue', color: 'steelblue', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>✨ {perk}</span>
             ))}
           </div>
         </div>
@@ -98,23 +100,23 @@ export default function RecruiterProfile() {
 
       {editing && (
         <div className="edit-overlay" onClick={() => setEditing(false)}>
-          <div className="edit-modal" style={{ maxWidth: 540 }} onClick={(e) => e.stopPropagation()}>
+          <div className="edit-modal" style={{ maxWidth: 540 }} onClick={(clickEvent) => clickEvent.stopPropagation()}>
             <div className="edit-header">
               <div><h2>Edit Profile</h2><p>Update employer details and contact info.</p></div>
               <button className="close-button" onClick={() => setEditing(false)}>×</button>
             </div>
-            <form onSubmit={save} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+            <form onSubmit={saveProfile} style={{ maxHeight: '70vh', overflowY: 'auto' }}>
               <div className="form-grid">
                 {FIELDS.map(([key, label, type, required]) => (
                   <div key={key} className="form-group">
                     <label>{label}</label>
-                    <input type={type} required={!!required} value={form[key]} onChange={(e) => field(key, e.target.value)} />
+                    <input type={type} required={!!required} value={form[key]} onChange={(changeEvent) => updateField(key, changeEvent.target.value)} />
                   </div>
                 ))}
               </div>
               <div className="form-group">
                 <label>Company Bio & Hiring Culture</label>
-                <textarea rows={3} value={form.bio} onChange={(e) => field('bio', e.target.value)} />
+                <textarea rows={3} value={form.bio} onChange={(changeEvent) => updateField('bio', changeEvent.target.value)} />
               </div>
               <div className="form-actions">
                 <button type="button" className="cancel-button" onClick={() => setEditing(false)}>Cancel</button>

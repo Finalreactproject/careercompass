@@ -5,16 +5,18 @@ export default function LoginModal({ onClose, onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  // True when the recruiter tab is selected
   const isRecruiter = role === 'recruiter'
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  // Called when the login form is submitted — hands the chosen role up to App.jsx
+  function handleSubmit(formEvent) {
+    formEvent.preventDefault()
     onLogin(role)
   }
 
   return (
     <div className="edit-overlay" onClick={onClose}>
-      <div className="edit-modal" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
+      <div className="edit-modal" style={{ maxWidth: 440 }} onClick={(clickEvent) => clickEvent.stopPropagation()}>
         <div className="edit-header">
           <div>
             <h2>{isRecruiter ? 'Recruiter Login' : 'Job Seeker Login'}</h2>
@@ -24,6 +26,7 @@ export default function LoginModal({ onClose, onLogin }) {
         </div>
 
         <form onSubmit={handleSubmit} style={{ padding: 24 }}>
+          {/* Role selector — switches between Student/Job Seeker and Recruiter */}
           <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
             <button
               type="button"
@@ -50,7 +53,7 @@ export default function LoginModal({ onClose, onLogin }) {
               type="email"
               placeholder={isRecruiter ? 'recruiter@company.com' : 'student@example.com'}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(changeEvent) => setEmail(changeEvent.target.value)}
             />
           </div>
 
@@ -61,7 +64,7 @@ export default function LoginModal({ onClose, onLogin }) {
               type="password"
               placeholder="••••••••"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(changeEvent) => setPassword(changeEvent.target.value)}
             />
           </div>
 
@@ -73,4 +76,3 @@ export default function LoginModal({ onClose, onLogin }) {
     </div>
   )
 }
-

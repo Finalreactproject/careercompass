@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react'
 const STAGES = ['All', 'Saved', 'Applied', 'Interview', 'Offer', 'Not Selected']
 
 const COLORS = {
-  Saved:          { bg: 'lavender',       color: 'darkblue' },
-  Applied:        { bg: 'lemonchiffon',   color: 'darkorange' },
-  Interview:      { bg: 'lightcyan',      color: 'steelblue' },
-  Offer:          { bg: 'honeydew',       color: 'darkgreen' },
-  'Not Selected': { bg: 'whitesmoke',     color: 'gray' },
+  Saved:          { bg: 'lavender',     color: 'darkblue' },
+  Applied:        { bg: 'lemonchiffon', color: 'darkorange' },
+  Interview:      { bg: 'lightcyan',    color: 'steelblue' },
+  Offer:          { bg: 'honeydew',     color: 'darkgreen' },
+  'Not Selected': { bg: 'whitesmoke',   color: 'gray' },
 }
 
 const DEFAULT_APPS = [
@@ -19,7 +19,11 @@ const DEFAULT_APPS = [
 
 function Tag({ status }) {
   const c = COLORS[status] || { bg: 'whitesmoke', color: 'gray' }
-  return <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20, fontWeight: 700, background: c.bg, color: c.color }}>{status}</span>
+  return (
+    <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 20, fontWeight: 700, background: c.bg, color: c.color }}>
+      {status}
+    </span>
+  )
 }
 
 function Applications({ onViewDetails, onNavigateToJobs }) {
@@ -27,29 +31,28 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
   const [search, setSearch] = useState('')
   const [stage, setStage] = useState('All')
   const [showAlerts, setShowAlerts] = useState(false)
-  const [alerts, setAlerts] = useState(() =>
-    JSON.parse(localStorage.getItem('applicant_notifications')) || [
-      { id: 'n1', title: 'Interview Scheduled: Frontend Developer', message: 'Safaricom scheduled your Technical Interview for Aug 24 at 10:00 AM.', date: 'Today', unread: true },
-    ]
-  )
+  const [alerts, setAlerts] = useState(() => JSON.parse(localStorage.getItem('applicant_notifications')) || [
+    { id: 'n1', title: 'Interview Scheduled: Frontend Developer', message: 'Safaricom scheduled your Technical Interview for Aug 24 at 10:00 AM.', date: 'Today', unread: true },
+  ])
 
   useEffect(() => {
-    function refresh() {
-      const stored = localStorage.getItem('applications')
-      if (stored) setApps(JSON.parse(stored))
-      const notifs = localStorage.getItem('applicant_notifications')
-      if (notifs) setAlerts(JSON.parse(notifs))
+    function syncData() {
+      const storedApps = localStorage.getItem('applications')
+      if (storedApps) setApps(JSON.parse(storedApps))
+      const storedNotifs = localStorage.getItem('applicant_notifications')
+      if (storedNotifs) setAlerts(JSON.parse(storedNotifs))
     }
-    window.addEventListener('applicationsUpdated', refresh)
-    window.addEventListener('notificationsUpdated', refresh)
+
+    window.addEventListener('applicationsUpdated', syncData)
+    window.addEventListener('notificationsUpdated', syncData)
     return () => {
-      window.removeEventListener('applicationsUpdated', refresh)
-      window.removeEventListener('notificationsUpdated', refresh)
+      window.removeEventListener('applicationsUpdated', syncData)
+      window.removeEventListener('notificationsUpdated', syncData)
     }
   }, [])
 
   function moveStage(id, newStage) {
-    const updated = apps.map((a) => a.id === id ? { ...a, status: newStage } : a)
+    const updated = apps.map((a) => (a.id === id ? { ...a, status: newStage } : a))
     setApps(updated)
     localStorage.setItem('applications', JSON.stringify(updated))
     window.dispatchEvent(new Event('applicationsUpdated'))
@@ -63,7 +66,7 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
   }
 
   function toggleAlerts() {
-    setShowAlerts((prev) => !prev)
+    setShowAlerts(!showAlerts)
     const read = alerts.map((a) => ({ ...a, unread: false }))
     setAlerts(read)
     localStorage.setItem('applicant_notifications', JSON.stringify(read))
@@ -72,7 +75,7 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
   const unread = alerts.filter((a) => a.unread).length
 
   const visible = apps.filter((a) => {
-    const q = search.toLowerCase()
+    const q = search.toLowerCase().trim()
     const matchSearch = !q || a.title?.toLowerCase().includes(q) || a.company?.toLowerCase().includes(q)
     const matchStage = stage === 'All' || a.status === stage
     return matchSearch && matchStage
@@ -99,9 +102,10 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
             <strong>Recent Alerts</strong>
             <button className="btn-outline" style={{ fontSize: 11, padding: '2px 8px' }} onClick={() => setShowAlerts(false)}>Close</button>
           </div>
-          {alerts.length === 0
-            ? <p style={{ color: 'gray', margin: 0, fontSize: 13 }}>No alerts yet.</p>
-            : alerts.slice(0, 4).map((n) => (
+          {alerts.length === 0 ? (
+            <p style={{ color: 'gray', margin: 0, fontSize: 13 }}>No alerts yet.</p>
+          ) : (
+            alerts.slice(0, 4).map((n) => (
               <div key={n.id} style={{ background: n.unread ? 'lavender' : 'whitesmoke', padding: 10, borderRadius: 8, marginBottom: 6, fontSize: 13 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
                   <span>{n.title}</span>
@@ -110,7 +114,7 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
                 <div style={{ color: 'dimgray', marginTop: 2 }}>{n.message}</div>
               </div>
             ))
-          }
+          )}
         </div>
       )}
 
@@ -122,7 +126,6 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {/* Stage filter pills */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
         {STAGES.map((s) => {
           const count = s === 'All' ? apps.length : apps.filter((a) => a.status === s).length
@@ -165,11 +168,7 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
               </div>
 
               <div className="app-actions">
-                <select
-                  value={app.status}
-                  onChange={(e) => moveStage(app.id, e.target.value)}
-                  style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid lightgray', fontSize: 13 }}
-                >
+                <select value={app.status} onChange={(e) => moveStage(app.id, e.target.value)} style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid lightgray', fontSize: 13 }}>
                   {STAGES.filter((s) => s !== 'All').map((s) => <option key={s}>{s}</option>)}
                 </select>
                 {onViewDetails && <button className="btn-outline" onClick={() => onViewDetails(app)}>View Details</button>}

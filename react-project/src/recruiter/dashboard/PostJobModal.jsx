@@ -13,19 +13,20 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
 
   if (!isOpen) return null
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  // Submits the form — splits the comma-separated skills string into an array before passing up
+  function handleSubmit(formEvent) {
+    formEvent.preventDefault()
     if (!form.title.trim()) return
     onPostJob({
       ...form,
-      skills: form.skills.split(',').map((s) => s.trim()).filter(Boolean),
+      skills: form.skills.split(',').map((skillText) => skillText.trim()).filter(Boolean),
     })
     onClose()
   }
 
   return (
     <div className="edit-overlay" onClick={onClose}>
-      <div className="edit-modal" style={{ maxWidth: 520 }} onClick={(e) => e.stopPropagation()}>
+      <div className="edit-modal" style={{ maxWidth: 520 }} onClick={(clickEvent) => clickEvent.stopPropagation()}>
         <div className="edit-header">
           <div>
             <h2>Post a Job Listing</h2>
@@ -41,7 +42,7 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
               required
               placeholder="e.g. Junior Frontend Developer"
               value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              onChange={(changeEvent) => setForm({ ...form, title: changeEvent.target.value })}
             />
           </div>
 
@@ -50,12 +51,12 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
               <label>Location</label>
               <input
                 value={form.location}
-                onChange={(e) => setForm({ ...form, location: e.target.value })}
+                onChange={(changeEvent) => setForm({ ...form, location: changeEvent.target.value })}
               />
             </div>
             <div className="form-group">
               <label>Employment Type</label>
-              <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+              <select value={form.type} onChange={(changeEvent) => setForm({ ...form, type: changeEvent.target.value })}>
                 <option>Full-time</option>
                 <option>Internship</option>
                 <option>Attachment</option>
@@ -70,12 +71,12 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
               <label>Monthly Salary Range</label>
               <input
                 value={form.salary}
-                onChange={(e) => setForm({ ...form, salary: e.target.value })}
+                onChange={(changeEvent) => setForm({ ...form, salary: changeEvent.target.value })}
               />
             </div>
             <div className="form-group">
               <label>Experience Level</label>
-              <select value={form.experience} onChange={(e) => setForm({ ...form, experience: e.target.value })}>
+              <select value={form.experience} onChange={(changeEvent) => setForm({ ...form, experience: changeEvent.target.value })}>
                 <option>Student / Attachment</option>
                 <option>Entry level / Junior</option>
                 <option>Mid-Level (1-3 yrs)</option>
@@ -88,7 +89,7 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
             <input
               placeholder="e.g. React, JavaScript, Git, CSS"
               value={form.skills}
-              onChange={(e) => setForm({ ...form, skills: e.target.value })}
+              onChange={(changeEvent) => setForm({ ...form, skills: changeEvent.target.value })}
             />
           </div>
 
@@ -97,7 +98,7 @@ export default function PostJobModal({ isOpen, onClose, onPostJob }) {
             <textarea
               rows={3}
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(changeEvent) => setForm({ ...form, description: changeEvent.target.value })}
             />
           </div>
 
