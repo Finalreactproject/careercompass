@@ -1,16 +1,13 @@
 import { useState } from 'react'
 
-// Recruiter can move candidates through these pipeline stages
 const STAGES = ['Applied', 'Screening', 'Interview', 'Offer', 'Accepted']
 
-// Document tabs shown inside the candidate review modal
 const DOC_TABS = [
-  { key: 'cv',             label: '📄 CV' },
-  { key: 'cover',          label: '📜 Cover Letter' },
-  { key: 'recommendation', label: '🎓 Recommendation' },
+  { key: 'cv', label: 'CV' },
+  { key: 'cover', label: 'Cover Letter' },
+  { key: 'recommendation', label: 'Recommendation' },
 ]
 
-// Builds realistic document content for any candidate (with richer content for the demo candidate Gladys)
 function buildDocuments(candidateData) {
   const isGladys = candidateData.name.toLowerCase().includes('gladys')
   return {
@@ -20,7 +17,7 @@ function buildDocuments(candidateData) {
     experience: isGladys
       ? [
           { role: 'Frontend Engineering Intern', org: 'TechSavvy Hub', period: 'May–Aug 2025', desc: 'Built React dashboards and optimized API caching by 35%.' },
-          { role: 'Open Source Contributor',     org: 'Nairobi Dev Club', period: '2024–Present', desc: 'Maintained UI component library used by 200+ student devs.' },
+          { role: 'Open Source Contributor', org: 'Nairobi Dev Club', period: '2024–Present', desc: 'Maintained UI component library used by 200+ student devs.' },
         ]
       : [{ role: `Junior ${candidateData.role}`, org: 'Academic Project Lead', period: '2025–2026', desc: 'Led capstone software project and team deliverables.' }],
     coverLetter: isGladys
@@ -36,12 +33,10 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
   const [docTab, setDocTab] = useState('cv')
   const [recruiterNotes, setRecruiterNotes] = useState('')
 
-  // If no candidate is selected, render nothing (modal stays hidden)
   if (!candidate) return null
 
   const documents = buildDocuments(candidate)
 
-  // Calls the parent handler to move the candidate to a new pipeline stage
   function advanceToStage(selectedStage) {
     onAdvanceStage(candidate.id, selectedStage, recruiterNotes)
     setRecruiterNotes('')
@@ -49,9 +44,7 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
 
   return (
     <div className="edit-overlay" onClick={onClose}>
-      <div className="edit-modal" style={{ maxWidth: 640 }} onClick={(clickEvent) => clickEvent.stopPropagation()}>
-
-        {/* Modal Header — shows candidate name, ATS score, and current pipeline stage */}
+      <div className="edit-modal" style={{ maxWidth: 640 }} onClick={(e) => e.stopPropagation()}>
         <div className="edit-header">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
@@ -66,7 +59,6 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
-        {/* Document Tab Bar — switch between CV, Cover Letter, and Recommendation */}
         <div style={{ display: 'flex', gap: 6, padding: '12px 24px 0', borderBottom: '1px solid lightgray' }}>
           {DOC_TABS.map((tabItem) => (
             <button key={tabItem.key} type="button" className={docTab === tabItem.key ? '' : 'btn-outline'} style={{ fontSize: 12, padding: '6px 14px', borderRadius: '6px 6px 0 0' }} onClick={() => setDocTab(tabItem.key)}>
@@ -75,16 +67,15 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
           ))}
         </div>
 
-        {/* Document Content Area */}
         <div style={{ padding: 20, maxHeight: '55vh', overflowY: 'auto' }}>
           {docTab === 'cv' && (
             <div>
               <div style={{ background: 'whitesmoke', borderRadius: 8, padding: 14, marginBottom: 14, fontSize: 13 }}>
-                <div>📧 <strong>Email:</strong> {candidate.email} · 📞 <strong>Phone:</strong> {candidate.phone}</div>
-                <div style={{ marginTop: 4 }}>🎓 <strong>Education:</strong> {documents.education}</div>
+                <div><strong>Email:</strong> {candidate.email} · <strong>Phone:</strong> {candidate.phone}</div>
+                <div style={{ marginTop: 4 }}><strong>Education:</strong> {documents.education}</div>
                 <div style={{ marginTop: 6, display: 'flex', gap: 12, color: 'steelblue' }}>
-                  <span>🔗 github.com/{candidate.name.toLowerCase().replace(' ', '')}</span>
-                  <span>🔗 linkedin.com/in/{candidate.name.toLowerCase().replace(' ', '')}</span>
+                  <span>github.com/{candidate.name.toLowerCase().replace(' ', '')}</span>
+                  <span>linkedin.com/in/{candidate.name.toLowerCase().replace(' ', '')}</span>
                 </div>
               </div>
 
@@ -124,13 +115,12 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
             </div>
           )}
 
-          {/* Recruiter Decision Section — add notes and move candidate to a pipeline stage */}
           <div style={{ borderTop: '1px solid lightgray', paddingTop: 16, marginTop: 16 }}>
             <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Recruiter Notes:</label>
             <input
               type="text"
               value={recruiterNotes}
-              onChange={(changeEvent) => setRecruiterNotes(changeEvent.target.value)}
+              onChange={(e) => setRecruiterNotes(e.target.value)}
               placeholder="e.g. Advancing to interview — strong portfolio..."
               style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid lightgray', fontSize: 13, marginBottom: 12 }}
             />
@@ -153,3 +143,4 @@ export default function CandidateReviewModal({ candidate, onClose, onAdvanceStag
     </div>
   )
 }
+

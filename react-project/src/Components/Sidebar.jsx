@@ -22,13 +22,13 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
             style={currentPage === 'recruiter' ? activeStyle : {}}
             onClick={() => setCurrentPage('recruiter')}
           >
-            💼 Candidate Pipeline
+            Candidate Pipeline
           </button>
           <button
             style={currentPage === 'recruiter-interviews' ? activeStyle : {}}
             onClick={() => setCurrentPage('recruiter-interviews')}
           >
-            📅 Interviews & Meetings
+            Interviews & Meetings
           </button>
         </>
       ) : (
@@ -37,13 +37,13 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
             style={currentPage === 'discover' ? activeStyle : {}}
             onClick={() => setCurrentPage('discover')}
           >
-            🏠 Dashboard
+            Dashboard
           </button>
           <button
             style={currentPage === 'jobs' ? activeStyle : {}}
             onClick={() => setCurrentPage('jobs')}
           >
-            🔍 Discover Jobs
+            Discover Jobs
           </button>
         </>
       )}
@@ -55,13 +55,13 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
             style={currentPage === 'applications' ? activeStyle : {}}
             onClick={() => setCurrentPage('applications')}
           >
-            📋 Applications
+            Applications
           </button>
           <button
             style={currentPage === 'interviews' ? activeStyle : {}}
             onClick={() => setCurrentPage('interviews')}
           >
-            🎤 Interviews & Prep
+            Interviews & Prep
           </button>
 
           <h5>DOCUMENTS</h5>
@@ -69,7 +69,7 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
             style={currentPage === 'cv' ? activeStyle : {}}
             onClick={() => setCurrentPage('cv')}
           >
-            📄 CV Center
+            CV Center
           </button>
         </>
       )}
@@ -80,14 +80,14 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
           style={currentPage === 'recruiter-profile' ? activeStyle : {}}
           onClick={() => setCurrentPage('recruiter-profile')}
         >
-          🏢 Company Profile
+          Company Profile
         </button>
       ) : (
         <button
           style={currentPage === 'profile' ? activeStyle : {}}
           onClick={() => setCurrentPage('profile')}
         >
-          👤 Profile
+          Profile
         </button>
       )}
 
@@ -96,7 +96,7 @@ function Sidebar({ currentPage, setCurrentPage, profile, userRole, onLogout }) {
         style={{ fontSize: 12, marginTop: 12, color: 'crimson', borderColor: 'lightpink' }}
         onClick={onLogout}
       >
-        🚪 Log Out
+        Log Out
       </button>
 
       <div className="sidebar-user">

@@ -18,6 +18,12 @@ function RecruiterForm({ onDone }) {
 
     localStorage.setItem("postedJobs", JSON.stringify([...jobs, newJob]));
 
+    const recruiterJobs = JSON.parse(localStorage.getItem("recruiter_jobs")) || [];
+    localStorage.setItem("recruiter_jobs", JSON.stringify([newJob, ...recruiterJobs]));
+
+    window.dispatchEvent(new Event("jobsUpdated"));
+    window.dispatchEvent(new Event("applicationsUpdated"));
+
     onDone(newJob);
   };
 
@@ -40,48 +46,36 @@ function RecruiterForm({ onDone }) {
     background: "#172554",
     color: "white",
     fontWeight: "600",
+    fontSize: "15px",
+    cursor: "pointer",
   };
 
   return (
-    <div
+    <form
+      onSubmit={submitJob}
       style={{
-        minHeight: "100vh",
-        background: "#f7f8fc",
-        padding: "50px",
-        color: "#172554",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <h1 style={{ textAlign: "center" }}>Post a Job</h1>
+      <input required name="company" placeholder="Company" style={s} />
+      <input required name="location" placeholder="Location" style={s} />
+      <input required name="title" placeholder="Job title" style={s} />
+      <input name="type" placeholder="Job type" style={s} />
 
-      <form
-        onSubmit={submitJob}
-        style={{
-          maxWidth: "600px",
-          margin: "30px auto",
-          padding: "35px",
-          background: "#fff",
-          borderRadius: "16px",
-          boxShadow: "0 4px 15px #17255415",
-        }}
-      >
-        <input name="title" placeholder="Job title" style={s} />
-        <input name="company" placeholder="Company" style={s} />
-        <input name="location" placeholder="Location" style={s} />
-        <input name="type" placeholder="Job type" style={s} />
+      <textarea
+        required
+        name="description"
+        placeholder="Job description"
+        style={{ ...s, height: "120px", resize: "vertical" }}
+      />
 
-        <textarea
-          name="description"
-          placeholder="Job description"
-          style={{ ...s, height: "120px" }}
-        />
+      <input name="apply" placeholder="How to apply" style={s} />
 
-        <input name="apply" placeholder="How to apply" style={s} />
-
-        <button type="submit" style={b}>
-          Post Job
-        </button>
-      </form>
-    </div>
+      <button type="submit" style={b}>
+        Post Job
+      </button>
+    </form>
   );
 }
 

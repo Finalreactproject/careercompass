@@ -66,9 +66,9 @@ function getQuestionsForRole(roleTitle = '') {
 }
 
 const TABS = [
-  { key: 'target', label: '🏢 Company Specific' },
-  { key: 'technical', label: '💻 Technical' },
-  { key: 'star', label: '⭐ Behavioral / STAR' },
+  { key: 'target', label: 'Company Specific' },
+  { key: 'technical', label: 'Technical' },
+  { key: 'star', label: 'Behavioral / STAR' },
 ]
 
 function InterviewPractice({ interview, onBack }) {
@@ -181,7 +181,6 @@ function InterviewPractice({ interview, onBack }) {
     setAnswer('')
     setFeedback(null)
     setShowTip(false)
-
     setQuestionIndex((currentIndex) => (currentIndex + 1) % questions.length)
   }
 
@@ -197,10 +196,10 @@ function InterviewPractice({ interview, onBack }) {
     <main className="main-content">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
         <button className="btn-outline" onClick={onBack}>
-          ← Back to Interviews
+          Back to Interviews
         </button>
         <span style={{ fontSize: 13, background: 'lavender', color: 'darkblue', padding: '6px 14px', borderRadius: 20, fontWeight: 600 }}>
-          🎯 {role} @ {company}
+          {role} @ {company}
         </span>
       </div>
 
@@ -211,7 +210,7 @@ function InterviewPractice({ interview, onBack }) {
             className={tab === tabItem.key ? '' : 'btn-outline'}
             onClick={() => switchTab(tabItem.key)}
           >
-            {tabItem.key === 'target' ? `🏢 ${company} Specific` : tabItem.label}
+            {tabItem.key === 'target' ? `${company} Specific` : tabItem.label}
           </button>
         ))}
       </div>
@@ -222,7 +221,7 @@ function InterviewPractice({ interview, onBack }) {
             Question {questionIndex + 1} of {questions.length}
           </span>
           <button className="btn-outline" style={{ fontSize: 12, padding: '4px 10px' }} onClick={() => setShowTip(!showTip)}>
-            💡 {showTip ? 'Hide Tip' : 'Coach Tip'}
+            {showTip ? 'Hide Tip' : 'Coach Tip'}
           </button>
         </div>
 
@@ -230,7 +229,7 @@ function InterviewPractice({ interview, onBack }) {
 
         {showTip && (
           <div style={{ background: 'lavender', borderRadius: 8, padding: 14, marginBottom: 16, fontSize: 13, color: 'darkblue', lineHeight: 1.5 }}>
-            <strong>💡 Strategy:</strong> {currentQuestion.tip}
+            <strong>Strategy:</strong> {currentQuestion.tip}
           </div>
         )}
 
@@ -247,7 +246,7 @@ function InterviewPractice({ interview, onBack }) {
               }}
               onClick={toggleRecord}
             >
-              {recording ? `🔴 Recording (${timer}s)... Stop` : '🎤 Record Voice Answer'}
+              {recording ? `Recording (${timer}s)... Stop` : 'Record Voice Answer'}
             </button>
           </div>
           <textarea
@@ -261,7 +260,7 @@ function InterviewPractice({ interview, onBack }) {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
           <button onClick={evaluateAnswer} disabled={!answer.trim() || evaluating}>
-            {evaluating ? '⚡ Analyzing...' : '⚡ Analyze My Response'}
+            {evaluating ? 'Analyzing...' : 'Analyze My Response'}
           </button>
           <button className="btn-outline" onClick={handleNextQuestion}>
             Next Question →
@@ -271,7 +270,6 @@ function InterviewPractice({ interview, onBack }) {
         {feedback && feedback.notSerious ? (
           <div style={{ marginTop: 20, background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 10, padding: 18 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <span style={{ fontSize: 20 }}>⚠️</span>
               <strong style={{ color: '#8a5700', fontSize: 15 }}>Take This Seriously</strong>
             </div>
             <p style={{ fontSize: 13, color: '#6b4200', margin: 0, lineHeight: 1.6 }}>{feedback.message}</p>

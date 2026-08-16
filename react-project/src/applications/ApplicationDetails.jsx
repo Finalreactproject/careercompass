@@ -49,21 +49,21 @@ function ApplicationDetails({ application, onBack, onStatusChange, onViewOffer, 
                 fontWeight: 600,
               }}
             >
-              {isExternal ? '🌐 External' : '⚡ Verified'}
+              {isExternal ? 'External' : 'Verified'}
             </span>
           </div>
           <p style={{ margin: '4px 0 0', color: 'slateblue', fontWeight: 600 }}>
-            {application.company}{application.location ? ` · 📍 ${application.location}` : ''}
+            {application.company}{application.location ? ` · ${application.location}` : ''}
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           {(application.status === 'Offer' || application.status === 'Accepted') && onViewOffer && (
-            <button onClick={() => onViewOffer(application)}>📜 View Offer</button>
+            <button onClick={() => onViewOffer(application)}>View Offer</button>
           )}
           {application.status === 'Interview' && onPracticeInterview && (
             <button onClick={() => onPracticeInterview({ role: application.title, company: application.company })}>
-              🎯 Practice
+              Practice
             </button>
           )}
           <span className="status-badge">Stage: {application.status}</span>

@@ -30,36 +30,33 @@ export default function RecruiterProfile() {
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState(profile)
 
-  // Saves the edited form to state and localStorage, then closes the edit modal
-  function saveProfile(formEvent) {
-    formEvent.preventDefault()
+  function saveProfile(e) {
+    e.preventDefault()
     setProfile(form)
     localStorage.setItem('recruiter_profile', JSON.stringify(form))
     setEditing(false)
   }
 
-  // Updates a single field in the form draft
   function updateField(fieldKey, newValue) {
-    setForm((previousForm) => ({ ...previousForm, [fieldKey]: newValue }))
+    setForm((prev) => ({ ...prev, [fieldKey]: newValue }))
   }
 
   return (
     <main className="main-content">
       <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 24 }}>
         <div>
-          <h1>Company & Recruiter Profile 🏢</h1>
+          <h1>Company & Recruiter Profile</h1>
           <p>Manage your employer branding and contact details.</p>
         </div>
-        <button onClick={() => { setForm(profile); setEditing(true) }}>✏️ Edit Profile</button>
+        <button onClick={() => { setForm(profile); setEditing(true) }}>Edit Profile</button>
       </div>
 
       <div style={{ background: 'white', border: '1px solid lightgray', borderRadius: 14, padding: 24, marginBottom: 24 }}>
         <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 20 }}>
-          <div style={{ width: 64, height: 64, borderRadius: 14, background: 'aliceblue', fontSize: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🏢</div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <h2 style={{ margin: 0, fontSize: 22 }}>{profile.companyName}</h2>
-              <span style={{ fontSize: 11, background: 'honeydew', color: 'darkgreen', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>✓ Verified</span>
+              <span style={{ fontSize: 11, background: 'honeydew', color: 'darkgreen', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>Verified</span>
             </div>
             <div style={{ fontSize: 13, color: 'dimgray', marginTop: 4 }}>{profile.industry} · {profile.location}</div>
           </div>
@@ -73,13 +70,13 @@ export default function RecruiterProfile() {
           </div>
           <div>
             <div style={{ fontSize: 12, color: 'gray', textTransform: 'uppercase' }}>Email & Phone</div>
-            <div style={{ fontSize: 13 }}>📧 {profile.email}</div>
-            <div style={{ fontSize: 13, marginTop: 2 }}>📞 {profile.phone}</div>
+            <div style={{ fontSize: 13 }}>{profile.email}</div>
+            <div style={{ fontSize: 13, marginTop: 2 }}>{profile.phone}</div>
           </div>
           <div>
             <div style={{ fontSize: 12, color: 'gray', textTransform: 'uppercase' }}>Scale & Portal</div>
-            <div style={{ fontSize: 13 }}>👥 {profile.companySize}</div>
-            <a href={profile.website} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'steelblue', textDecoration: 'none' }}>🌐 Career Portal</a>
+            <div style={{ fontSize: 13 }}>{profile.companySize}</div>
+            <a href={profile.website} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'steelblue', textDecoration: 'none' }}>Career Portal</a>
           </div>
         </div>
 
@@ -92,7 +89,7 @@ export default function RecruiterProfile() {
           <h3 style={{ fontSize: 16, margin: '0 0 10px' }}>Perks & Offerings</h3>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {profile.perks?.map((perk, perkIndex) => (
-              <span key={perkIndex} style={{ background: 'aliceblue', color: 'steelblue', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>✨ {perk}</span>
+              <span key={perkIndex} style={{ background: 'aliceblue', color: 'steelblue', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 500 }}>{perk}</span>
             ))}
           </div>
         </div>
@@ -100,7 +97,7 @@ export default function RecruiterProfile() {
 
       {editing && (
         <div className="edit-overlay" onClick={() => setEditing(false)}>
-          <div className="edit-modal" style={{ maxWidth: 540 }} onClick={(clickEvent) => clickEvent.stopPropagation()}>
+          <div className="edit-modal" style={{ maxWidth: 540 }} onClick={(e) => e.stopPropagation()}>
             <div className="edit-header">
               <div><h2>Edit Profile</h2><p>Update employer details and contact info.</p></div>
               <button className="close-button" onClick={() => setEditing(false)}>×</button>
@@ -110,13 +107,13 @@ export default function RecruiterProfile() {
                 {FIELDS.map(([key, label, type, required]) => (
                   <div key={key} className="form-group">
                     <label>{label}</label>
-                    <input type={type} required={!!required} value={form[key]} onChange={(changeEvent) => updateField(key, changeEvent.target.value)} />
+                    <input type={type} required={!!required} value={form[key]} onChange={(e) => updateField(key, e.target.value)} />
                   </div>
                 ))}
               </div>
               <div className="form-group">
                 <label>Company Bio & Hiring Culture</label>
-                <textarea rows={3} value={form.bio} onChange={(changeEvent) => updateField('bio', changeEvent.target.value)} />
+                <textarea rows={3} value={form.bio} onChange={(e) => updateField('bio', e.target.value)} />
               </div>
               <div className="form-actions">
                 <button type="button" className="cancel-button" onClick={() => setEditing(false)}>Cancel</button>
@@ -129,3 +126,4 @@ export default function RecruiterProfile() {
     </main>
   )
 }
+

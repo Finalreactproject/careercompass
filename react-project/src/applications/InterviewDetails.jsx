@@ -48,7 +48,7 @@ function InterviewDetails({ interview, onBack, onPractice, onUpdateInterview }) 
           <p style={{ margin: '4px 0 0', color: 'slateblue', fontWeight: 600 }}>
             {interview.role} · {interview.round || 'Technical Round'}
           </p>
-          <small style={{ color: 'gray' }}>📅 {interview.date} at {interview.time || '10:00 AM'}</small>
+          <small style={{ color: 'gray' }}>{interview.date} at {interview.time || '10:00 AM'}</small>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {interview.meetingLink && (
@@ -66,10 +66,10 @@ function InterviewDetails({ interview, onBack, onPractice, onUpdateInterview }) 
                 fontWeight: 600,
               }}
             >
-              📹 Launch Call
+              Launch Call
             </a>
           )}
-          <button onClick={() => onPractice(interview)}>🎯 Practice Room</button>
+          <button onClick={() => onPractice(interview)}>Practice Room</button>
         </div>
       </div>
 

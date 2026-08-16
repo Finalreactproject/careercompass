@@ -63,7 +63,7 @@ function OfferDetails({ application, onBack, onAcceptOffer }) {
             fontWeight: 600,
           }}
         >
-          {signed ? '✓ Offer Accepted' : 'Pending Review'}
+          {signed ? 'Offer Accepted' : 'Pending Review'}
         </span>
       </div>
 

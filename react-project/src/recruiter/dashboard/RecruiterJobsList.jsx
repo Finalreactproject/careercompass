@@ -11,7 +11,6 @@ function RecruiterJobsList({ jobs, candidates, onOpenPostModal, onDeleteJob, onE
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
         {jobs.map((job) => {
-          // Count how many pipeline candidates are applying for this job title
           const applicantCount = candidates.filter((candidate) =>
             candidate.role.toLowerCase().includes(job.title.toLowerCase())
           ).length
@@ -33,26 +32,25 @@ function RecruiterJobsList({ jobs, candidates, onOpenPostModal, onDeleteJob, onE
               </div>
 
               <h3 style={{ margin: '4px 0', fontSize: 16, color: 'midnightblue' }}>{job.title}</h3>
-              <p style={{ margin: '0 0 6px', fontSize: 13, color: 'dimgray' }}>📍 {job.location} · 💵 {job.salary}</p>
+              <p style={{ margin: '0 0 6px', fontSize: 13, color: 'dimgray' }}>{job.location}{job.salary ? ` · ${job.salary}` : ''}</p>
 
               {job.deadline && (
                 <p style={{ margin: '0 0 10px', fontSize: 12, color: isExpired ? 'darkorange' : 'slateblue' }}>
-                  📅 Deadline: {job.deadline}
+                  Deadline: {job.deadline}
                 </p>
               )}
 
               <div style={{ fontSize: 12, color: 'darkslateblue', fontWeight: 600, borderTop: '1px solid whitesmoke', paddingTop: 10, marginBottom: 10 }}>
-                👥 {applicantCount} Applicants in Pipeline
+                {applicantCount} Applicants in Pipeline
               </div>
 
-              {/* Action buttons — extend resets the deadline, delete removes the listing */}
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   className="btn-outline"
                   style={{ flex: 1, fontSize: 12 }}
                   onClick={() => onExtendJob(job.id)}
                 >
-                  📅 Extend
+                  Extend
                 </button>
                 <button
                   className="btn-danger"
@@ -61,7 +59,7 @@ function RecruiterJobsList({ jobs, candidates, onOpenPostModal, onDeleteJob, onE
                     if (window.confirm(`Remove "${job.title}" listing?`)) onDeleteJob(job.id)
                   }}
                 >
-                  🗑 Delete
+                  Delete
                 </button>
               </div>
             </div>
@@ -73,3 +71,4 @@ function RecruiterJobsList({ jobs, candidates, onOpenPostModal, onDeleteJob, onE
 }
 
 export default RecruiterJobsList
+

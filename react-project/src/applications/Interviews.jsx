@@ -82,7 +82,7 @@ function Interviews({ onPractice, onViewDetails }) {
   return (
     <main className="main-content">
       <div style={{ marginBottom: 20 }}>
-        <h1>My Interviews & Prep Hub 🎤</h1>
+        <h1>My Interviews & Prep Hub</h1>
         <p>{upcomingCount} upcoming · Practice and prepare for each role.</p>
       </div>
 
@@ -130,13 +130,13 @@ function Interviews({ onPractice, onViewDetails }) {
                 </div>
 
                 <div style={{ background: 'whitesmoke', borderRadius: 8, padding: '10px 12px', fontSize: 13, marginBottom: 14 }}>
-                  <div>🎯 <strong>Round:</strong> {interviewItem.round}</div>
-                  <div>📅 <strong>Date:</strong> {interviewItem.date} at {interviewItem.time}</div>
+                  <div><strong>Round:</strong> {interviewItem.round}</div>
+                  <div><strong>Date:</strong> {interviewItem.date} at {interviewItem.time}</div>
                 </div>
 
                 {interviewItem.reminderMinutes && (
                   <div style={{ display: 'inline-flex', gap: 6, fontSize: 12, background: 'lemonchiffon', color: 'darkorange', border: '1px solid peachpuff', padding: '3px 10px', borderRadius: 14, marginBottom: 14 }}>
-                    🔔 Reminder: {interviewItem.reminderMinutes} mins before
+                    Reminder: {interviewItem.reminderMinutes} mins before
                   </div>
                 )}
               </div>
@@ -145,14 +145,14 @@ function Interviews({ onPractice, onViewDetails }) {
                 {interviewItem.status === 'Upcoming' ? (
                   <>
                     <button style={{ width: '100%' }} onClick={() => onPractice(interviewItem)}>
-                      🎯 Practice Role Interview
+                      Practice Role Interview
                     </button>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button className="btn-outline" style={{ flex: 1, fontSize: 13 }} onClick={() => onViewDetails(interviewItem)}>
                         Prep & Details
                       </button>
                       <button className="btn-outline" style={{ flex: 1, fontSize: 13 }} onClick={() => setReminderFor(interviewItem)}>
-                        🔔 Reminder
+                        Reminder
                       </button>
                       {interviewItem.meetingLink && (
                         <a
@@ -171,14 +171,14 @@ function Interviews({ onPractice, onViewDetails }) {
                             textDecoration: 'none',
                           }}
                         >
-                          📹 Join
+                          Join
                         </a>
                       )}
                     </div>
                   </>
                 ) : (
                   <div style={{ fontSize: 13, color: 'darkgreen', background: 'honeydew', padding: '10px 12px', borderRadius: 8, textAlign: 'center' }}>
-                    ✓ Interview Completed
+                    Interview Completed
                   </div>
                 )}
               </div>
@@ -208,7 +208,7 @@ function Interviews({ onPractice, onViewDetails }) {
                     style={{ padding: '12px 8px', fontSize: 13 }}
                     onClick={() => setReminderMinutes(minutes)}
                   >
-                    🔔 {minutes} Mins Before
+                    {minutes} Mins Before
                   </button>
                 ))}
               </div>

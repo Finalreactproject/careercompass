@@ -28,7 +28,7 @@ function Footer() {
 
       <div className="footer-bottom">
         <span>© 2026 CareerCompass — Moringa School Group 3</span>
-        <span>🛡️ Anti-Scam Verified Platform</span>
+        <span>Anti-Scam Verified Platform</span>
       </div>
     </footer>
   )

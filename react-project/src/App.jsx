@@ -126,7 +126,7 @@ function App() {
         return (
           <main className="main-content">
             <div style={{ marginBottom: 20 }}>
-              <h1 style={{ margin: '0 0 6px' }}>Good morning, {profile.fullName} 👋</h1>
+              <h1 style={{ margin: '0 0 6px' }}>Good morning, {profile.fullName}</h1>
               <p style={{ margin: 0, color: '#666' }}>Here is a summary of your job search progress.</p>
             </div>
             <OverviewCards />

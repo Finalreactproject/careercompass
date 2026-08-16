@@ -1,12 +1,8 @@
 import { useState } from "react";
-
-// Reference screenshots — save the three Frontend CV example images into
-// your assets folder with these names (or update the paths).
 import darkCreamTemplateImg from "../assets/FrontEnd1.png";
 import darkSidebarTemplateImg from "../assets/FrontEnd2.png";
 import minimalTemplateImg from "../assets/FrontEnd3.webp";
 
-// ---------- Shared colors ----------
 const NAVY = "#2B2E3B";
 const CREAM = "#F3E8DE";
 const DARK_GRAY = "#3A3A3A";
@@ -18,7 +14,6 @@ const BORDER = "#E5E7EB";
 let idCounter = 200;
 const nextId = () => `item-${idCounter++}`;
 
-// ---------- Shared generic state helpers ----------
 function updateField(setState, field, value) {
   setState((prev) => ({ ...prev, [field]: value }));
 }
@@ -285,13 +280,9 @@ function FrontEndCvDarkCream(props) {
                 marginBottom: "10px",
               }}
             >
-              <span style={{ marginRight: "8px" }}>
-                {field === "email" && "✉️"}
-                {field === "phone" && "📞"}
-                {field === "location" && "📍"}
-              </span>
               <input
                 style={fieldStyle}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
                 value={personal[field]}
                 onChange={(e) =>
                   updateField(setPersonal, field, e.target.value)

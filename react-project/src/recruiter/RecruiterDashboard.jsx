@@ -3,8 +3,8 @@ import RecruiterStatsOverview from './dashboard/RecruiterStatsOverview'
 import RecruiterPipelineView from './dashboard/RecruiterPipelineView'
 import RecruiterJobsList from './dashboard/RecruiterJobsList'
 import CandidateReviewModal from './dashboard/CandidateReviewModal'
-import PostJobModal from './dashboard/PostJobModal'
 import ScheduleInterviewModal from './dashboard/ScheduleInterviewModal'
+import RecruiterForm from '../Components/RecruiterForm'
 
 const INITIAL_JOBS = [
   { id: 'rj-1', title: 'Frontend Developer', type: 'Full-time', location: 'Nairobi', salary: 'KES 140k–190k', status: 'Active', deadline: 'Sep 15, 2026' },
@@ -78,10 +78,9 @@ function RecruiterDashboard() {
     const stored = localStorage.getItem('recruiter_jobs')
     return stored ? JSON.parse(stored) : INITIAL_JOBS
   })
-
   const [activeTab, setActiveTab] = useState('pipeline')
   const [selectedCandidate, setSelectedCandidate] = useState(null)
-  const [showPostModal, setShowPostModal] = useState(false)
+  const [showPostForm, setShowPostForm] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
 
   useEffect(() => {
@@ -101,52 +100,74 @@ function RecruiterDashboard() {
     )
     setCandidates(updatedCandidates)
 
-    if (selectedCandidate?.id === candidateId) {
-      setSelectedCandidate({ ...selectedCandidate, stage: newStage, notes: notes || selectedCandidate.notes })
+    const stageNotifications = {
+      Screening: 'Your application has advanced to the Screening round.',
+      Interview: 'You have been invited for an interview.',
+      Offer: 'Congratulations! You have received a formal Job Offer.',
+      Accepted: 'Offer accepted. Welcome aboard!',
     }
 
-    const storedApps = JSON.parse(localStorage.getItem('applications')) || []
-    localStorage.setItem(
-      'applications',
-      JSON.stringify(
-        storedApps.map((application) =>
-          application.title.toLowerCase().includes(targetCandidate.role.toLowerCase())
-            ? { ...application, status: newStage, notes: notes ? `Recruiter: ${notes}` : `Updated to ${newStage}.` }
-            : application
-        )
+    if (stageNotifications[newStage]) {
+      const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
+      localStorage.setItem(
+        'applicant_notifications',
+        JSON.stringify([
+          {
+            id: 'notif-' + Date.now(),
+            title: `Application Status Updated: ${newStage}`,
+            message: `${targetCandidate.role} — ${stageNotifications[newStage]}`,
+            date: 'Just now',
+            unread: true,
+          },
+          ...notifications,
+        ])
       )
-    )
+    }
 
+    const apps = JSON.parse(localStorage.getItem('applications')) || []
+    const updatedApps = apps.map((app) => {
+      if (app.title === targetCandidate.role) {
+        return { ...app, status: newStage, notes: notes || app.notes }
+      }
+      return app
+    })
+    localStorage.setItem('applications', JSON.stringify(updatedApps))
+
+    const interviews = JSON.parse(localStorage.getItem('interviews')) || []
     if (newStage === 'Interview') {
-      const interviewList = JSON.parse(localStorage.getItem('interviews')) || []
-      if (!interviewList.some((interview) => interview.role === targetCandidate.role)) {
-        interviewList.unshift({
+      const interviewExists = interviews.some((iv) => iv.role === targetCandidate.role)
+      if (!interviewExists) {
+        interviews.push({
           id: 'iv-' + Date.now(),
           company: 'Safaricom PLC',
           role: targetCandidate.role,
-          round: targetCandidate.interviewRound || 'Technical Round',
-          date: targetCandidate.interviewDate || 'Aug 24, 2026',
-          time: '10:00 AM',
+          round: targetCandidate.interviewRound || 'Technical Interview',
+          date: targetCandidate.interviewDate?.split(' at ')[0] || 'Aug 24, 2026',
+          time: targetCandidate.interviewDate?.split(' at ')[1] || '10:00 AM',
           status: 'Upcoming',
           location: 'Nairobi HQ / Google Meet',
-          meetingLink: 'https://meet.google.com/saf-interview-call',
+          meetingLink: 'https://meet.google.com/career-compass-call',
         })
-        localStorage.setItem('interviews', JSON.stringify(interviewList))
+        localStorage.setItem('interviews', JSON.stringify(interviews))
       }
     }
 
-    const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
+    const meetings = JSON.parse(localStorage.getItem('recruiter_meetings')) || []
     localStorage.setItem(
-      'applicant_notifications',
+      'recruiter_meetings',
       JSON.stringify([
         {
-          id: 'notif-' + Date.now(),
-          title: `Update: ${targetCandidate.role}`,
-          message: `Your application moved to "${newStage}".${notes ? ` Note: "${notes}"` : ''}`,
-          date: 'Just now',
-          unread: true,
+          id: 'rm-' + Date.now(),
+          candidateName: targetCandidate.name,
+          role: targetCandidate.role,
+          round: targetCandidate.interviewRound || 'Technical Round',
+          date: targetCandidate.interviewDate?.split(' at ')[0] || 'Aug 24, 2026',
+          time: targetCandidate.interviewDate?.split(' at ')[1] || '10:00 AM',
+          status: 'Upcoming',
+          meetingLink: 'https://meet.google.com/recruiter-interview-call',
+          notes: notes || 'Scheduled via recruiter dashboard.',
         },
-        ...notifications,
+        ...meetings,
       ])
     )
 
@@ -160,7 +181,6 @@ function RecruiterDashboard() {
     localStorage.setItem('recruiter_jobs', JSON.stringify(updated))
   }
 
-  // Extends a job's deadline by 30 days and re-activates it if it was expired
   function handleExtendJob(jobId) {
     const updated = jobs.map((job) => {
       if (job.id !== jobId) return job
@@ -171,36 +191,24 @@ function RecruiterDashboard() {
   }
 
   function handlePostJob(jobData) {
-    const company = JSON.parse(localStorage.getItem('recruiter_profile') || '{}').companyName || 'Safaricom PLC'
+    const defaultCompany = JSON.parse(localStorage.getItem('recruiter_profile') || '{}').companyName || 'Safaricom PLC'
     const newJob = {
       id: 'rj-' + Date.now(),
-      company,
-      ...jobData,
+      company: jobData.company || defaultCompany,
+      location: jobData.location || 'Nairobi (Hybrid)',
+      type: jobData.type || 'Full-time',
+      salary: jobData.salary || '',
       skills: jobData.skills || ['React', 'JavaScript'],
       experience: jobData.experience || 'Entry level',
       description: jobData.description || 'Open position for graduate candidates.',
       status: 'Active',
+      deadline: jobData.deadline || 'Nov 30, 2026',
+      ...jobData,
     }
     const updatedJobs = [newJob, ...jobs]
     setJobs(updatedJobs)
     localStorage.setItem('recruiter_jobs', JSON.stringify(updatedJobs))
-    setShowPostModal(false)
-
-    const notifications = JSON.parse(localStorage.getItem('applicant_notifications')) || []
-    localStorage.setItem(
-      'applicant_notifications',
-      JSON.stringify([
-        {
-          id: 'notif-' + Date.now(),
-          title: 'New Job Posted 🚀',
-          message: `${jobData.title} at ${company} — now open in ${jobData.location}.`,
-          date: 'Just now',
-          unread: true,
-        },
-        ...notifications,
-      ])
-    )
-    window.dispatchEvent(new Event('notificationsUpdated'))
+    setShowPostForm(false)
   }
 
   function handleScheduleInterview({ candidateId, date, time, round }) {
@@ -214,44 +222,41 @@ function RecruiterDashboard() {
     setShowScheduleModal(false)
   }
 
-  const stats = {
-    jobsCount: jobs.length,
-    candidatesCount: candidates.length,
-    interviewCount: candidates.filter((candidate) => candidate.stage === 'Interview').length,
-    offersCount: candidates.filter((candidate) => candidate.stage === 'Offer' || candidate.stage === 'Accepted').length,
+  const activeTabStyle = {
+    background: 'steelblue',
+    color: 'white',
+    borderColor: 'steelblue',
   }
 
   return (
     <main className="main-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 14, marginBottom: 24 }}>
         <div>
-          <h1>Recruiter Portal & Hiring HQ 💼</h1>
-          <p>Review applicants, evaluate candidates, and manage verified job listings.</p>
+          <h1 style={{ margin: '0 0 4px' }}>Recruiter Portal & Hiring HQ</h1>
+          <p style={{ margin: 0, color: 'gray', fontSize: 14 }}>Manage candidate pipeline, screen applications, and post open positions.</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <button className="btn-outline" onClick={() => setShowScheduleModal(true)}>
-            📅 Schedule Interview
+            Schedule Interview
           </button>
-          <button onClick={() => setShowPostModal(true)}>
-            + Post Job Listing
-          </button>
+          <button onClick={() => setShowPostForm(true)}>+ Post Job</button>
         </div>
       </div>
-
-      <RecruiterStatsOverview stats={stats} onSelectTab={setActiveTab} />
 
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         <button
           className={activeTab === 'pipeline' ? '' : 'btn-outline'}
+          style={activeTab === 'pipeline' ? activeTabStyle : {}}
           onClick={() => setActiveTab('pipeline')}
         >
-          👥 Candidate Pipeline ({candidates.length})
+          Candidate Pipeline ({candidates.length})
         </button>
         <button
           className={activeTab === 'jobs' ? '' : 'btn-outline'}
+          style={activeTab === 'jobs' ? activeTabStyle : {}}
           onClick={() => setActiveTab('jobs')}
         >
-          📋 Posted Job Listings ({jobs.length})
+          Your Jobs ({jobs.length})
         </button>
       </div>
 
@@ -265,7 +270,7 @@ function RecruiterDashboard() {
         <RecruiterJobsList
           jobs={jobs}
           candidates={candidates}
-          onOpenPostModal={() => setShowPostModal(true)}
+          onOpenPostModal={() => setShowPostForm(true)}
           onDeleteJob={handleDeleteJob}
           onExtendJob={handleExtendJob}
         />
@@ -277,18 +282,57 @@ function RecruiterDashboard() {
         onAdvanceStage={handleAdvanceStage}
       />
 
-      <PostJobModal
-        isOpen={showPostModal}
-        onClose={() => setShowPostModal(false)}
-        onPostJob={handlePostJob}
-      />
-
       <ScheduleInterviewModal
         isOpen={showScheduleModal}
         candidates={candidates}
         onClose={() => setShowScheduleModal(false)}
         onSchedule={handleScheduleInterview}
       />
+
+      {showPostForm && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+          onClick={() => setShowPostForm(false)}
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: '16px',
+              padding: '35px',
+              width: '100%',
+              maxWidth: '520px',
+              boxShadow: '0 8px 32px rgba(23,37,84,0.18)',
+              color: '#172554',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0 }}>Post a Job</h2>
+              <button
+                className="btn-outline"
+                style={{ padding: '4px 12px', cursor: 'pointer' }}
+                onClick={() => setShowPostForm(false)}
+              >
+                &times;
+              </button>
+            </div>
+            <RecruiterForm
+              onDone={(newJob) => {
+                handlePostJob(newJob)
+                setShowPostForm(false)
+              }}
+            />
+          </div>
+        </div>
+      )}
     </main>
   )
 }

@@ -32,8 +32,8 @@ function DifferenceSection() {
       <div className="comparison-table">
         <div className="comparison-header">
           <span>Feature</span>
-          <span>❌ Traditional Job Boards</span>
-          <span>✅ CareerCompass</span>
+          <span>Traditional Job Boards</span>
+          <span>CareerCompass</span>
         </div>
 
         {ROWS.map((row) => (

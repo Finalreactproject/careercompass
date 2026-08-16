@@ -10,7 +10,6 @@ function JobDiscovery() {
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [jobTypeFilter, setJobTypeFilter] = useState("");
-  // Load saved jobs from localStorage so they survive navigation
   const [savedJobs, setSavedJobs] = useState(() =>
     JSON.parse(localStorage.getItem('applications') || '[]')
       .filter((a) => a.status === 'Saved')
@@ -23,10 +22,8 @@ function JobDiscovery() {
 
     let updated
     if (alreadySaved) {
-      // Unsave — remove from applications list
       updated = stored.filter((a) => a.id !== job.id)
     } else {
-      // Save — add as a "Saved" application in the standard shape
       const newEntry = {
         id: job.id,
         title: job.title,
@@ -43,12 +40,13 @@ function JobDiscovery() {
     localStorage.setItem('applications', JSON.stringify(updated))
     window.dispatchEvent(new Event('applicationsUpdated'))
 
-    // Keep local isSaved state in sync
     setSavedJobs(updated.filter((a) => a.status === 'Saved').map((a) => ({ id: a.id })))
   }
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+
 
   useEffect(() => {
     async function loadJobs() {
@@ -63,6 +61,9 @@ function JobDiscovery() {
     }
 
     loadJobs();
+
+    window.addEventListener("jobsUpdated", loadJobs);
+    return () => window.removeEventListener("jobsUpdated", loadJobs);
   }, []);
 
   if (loading) {

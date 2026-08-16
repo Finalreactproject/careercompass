@@ -1,13 +1,11 @@
 import { useState } from 'react'
 
-// Pipeline stages available for filtering candidates in the recruiter view
 export const STAGES = ['All', 'Applied', 'Screening', 'Interview', 'Offer', 'Accepted']
 
 function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage }) {
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState('All')
 
-  // Filter candidates by search text (name or role) and the active stage button
   const filteredCandidates = candidates.filter((candidate) => {
     const searchQuery = search.toLowerCase()
     const matchesSearch = !searchQuery || candidate.name.toLowerCase().includes(searchQuery) || candidate.role.toLowerCase().includes(searchQuery)
@@ -18,16 +16,14 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
   return (
     <div>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-        {/* Search bar — filters by candidate name or role title */}
         <input
           className="search-input"
           style={{ flex: 1, minWidth: 220, margin: 0 }}
           placeholder="Search candidates by name or role..."
           value={search}
-          onChange={(changeEvent) => setSearch(changeEvent.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* Stage filter buttons — click to narrow the list to a specific pipeline stage */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {STAGES.map((stageName) => (
             <button
@@ -62,11 +58,10 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
                 </div>
 
                 <span style={{ color: 'dimgray', fontSize: 13, marginTop: 2 }}>
-                  Applying for: <strong>{candidate.role}</strong> · 🎓 {candidate.university}
+                  Applying for: <strong>{candidate.role}</strong> · {candidate.university}
                 </span>
-                <small style={{ color: 'gray' }}>📧 {candidate.email} | 📞 {candidate.phone}</small>
+                <small style={{ color: 'gray' }}>{candidate.email} | {candidate.phone}</small>
 
-                {/* Skill tags row */}
                 <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                   {candidate.skills?.map((skill) => (
                     <span key={skill} style={{ background: 'whitesmoke', color: 'dimgray', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
@@ -77,19 +72,17 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
               </div>
 
               <div className="app-actions" style={{ flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-                {/* Open the full candidate profile modal */}
                 <button
                   className="btn-outline"
                   style={{ fontSize: 12, padding: '6px 12px' }}
                   onClick={() => onInspectCandidate(candidate)}
                 >
-                  🔍 View Profile
+                  View Profile
                 </button>
 
-                {/* Quick stage-change dropdown — without opening the full modal */}
                 <select
                   value={candidate.stage}
-                  onChange={(changeEvent) => onAdvanceStage(candidate.id, changeEvent.target.value)}
+                  onChange={(e) => onAdvanceStage(candidate.id, e.target.value)}
                   style={{ fontSize: 12, padding: '5px 8px' }}
                 >
                   {STAGES.filter((stageName) => stageName !== 'All').map((stageName) => (
@@ -106,3 +99,4 @@ function RecruiterPipelineView({ candidates, onInspectCandidate, onAdvanceStage 
 }
 
 export default RecruiterPipelineView
+

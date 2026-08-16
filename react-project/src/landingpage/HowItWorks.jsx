@@ -1,21 +1,18 @@
 const STEPS = [
   {
     number: '01',
-    icon: '🔍',
     title: 'Discover verified roles',
     body: 'Search and filter by location, job type, and salary. Every listing carries a mandatory anti-scam employer badge.',
   },
   {
     number: '02',
-    icon: '📋',
     title: 'Apply & track your pipeline',
     body: 'Every application has one journey: Applied → Screening → Interview → Offer — all in a visual Kanban board.',
   },
   {
     number: '03',
-    icon: '🏆',
     title: 'Prepare & land the offer',
-    body: 'Use AI mock interviews and live ATS resume scoring to walk into every interview with confidence.',
+    body: 'Use mock interviews and ATS resume scoring to walk into every interview with confidence.',
   },
 ]
 
@@ -31,7 +28,6 @@ function HowItWorks() {
         {STEPS.map((step) => (
           <div key={step.number} className="step-card">
             <div className="step-number">{step.number}</div>
-            <div className="step-icon">{step.icon}</div>
             <h3>{step.title}</h3>
             <p>{step.body}</p>
           </div>

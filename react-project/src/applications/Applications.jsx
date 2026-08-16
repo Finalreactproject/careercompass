@@ -86,9 +86,9 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ margin: 0 }}>My Applications 📋</h1>
+            <h1 style={{ margin: 0 }}>My Applications</h1>
             <button className="btn-outline" style={{ padding: '4px 10px', fontSize: 13 }} onClick={toggleAlerts}>
-              🔔 {unread > 0 ? `${unread} New` : 'Alerts'}
+              {unread > 0 ? `${unread} New` : 'Alerts'}
             </button>
           </div>
           <p style={{ margin: '4px 0 0', color: 'gray' }}>{apps.length} tracked applications</p>
@@ -163,7 +163,7 @@ function Applications({ onViewDetails, onNavigateToJobs }) {
                   <strong style={{ fontSize: 15 }}>{app.title}</strong>
                   <Tag status={app.status} />
                 </div>
-                <span style={{ fontSize: 13, color: 'dimgray' }}>🏢 {app.company}{app.location ? ` · 📍 ${app.location}` : ''}</span>
+                <span style={{ fontSize: 13, color: 'dimgray' }}>{app.company}{app.location ? ` · ${app.location}` : ''}</span>
                 {app.notes && <small style={{ display: 'block', color: 'gray', marginTop: 4 }}>{app.notes}</small>}
               </div>
 

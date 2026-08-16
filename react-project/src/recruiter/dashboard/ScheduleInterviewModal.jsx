@@ -8,16 +8,15 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
 
   if (!isOpen) return null
 
-  // Validates that a candidate is selected, then hands the schedule data up to the parent
-  function handleSubmit(formEvent) {
-    formEvent.preventDefault()
+  function handleSubmit(e) {
+    e.preventDefault()
     if (!candidateId) return
     onSchedule({ candidateId, date, time, round })
   }
 
   return (
     <div className="edit-overlay" onClick={onClose}>
-      <div className="edit-modal" onClick={(clickEvent) => clickEvent.stopPropagation()}>
+      <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
         <div className="edit-header">
           <div>
             <h2>Schedule Candidate Interview</h2>
@@ -32,7 +31,7 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
             <select
               required
               value={candidateId}
-              onChange={(changeEvent) => setCandidateId(changeEvent.target.value)}
+              onChange={(e) => setCandidateId(e.target.value)}
             >
               <option value="">-- Choose Candidate --</option>
               {candidates.map((candidate) => (
@@ -46,17 +45,17 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
           <div className="form-grid">
             <div className="form-group">
               <label>Date</label>
-              <input value={date} onChange={(changeEvent) => setDate(changeEvent.target.value)} />
+              <input value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
             <div className="form-group">
               <label>Time</label>
-              <input value={time} onChange={(changeEvent) => setTime(changeEvent.target.value)} />
+              <input value={time} onChange={(e) => setTime(e.target.value)} />
             </div>
           </div>
 
           <div className="form-group">
             <label>Interview Round</label>
-            <select value={round} onChange={(changeEvent) => setRound(changeEvent.target.value)}>
+            <select value={round} onChange={(e) => setRound(e.target.value)}>
               <option>Technical Round</option>
               <option>System Architecture</option>
               <option>STAR Behavioral Interview</option>
@@ -75,3 +74,4 @@ function ScheduleInterviewModal({ isOpen, candidates, onClose, onSchedule }) {
 }
 
 export default ScheduleInterviewModal
+
